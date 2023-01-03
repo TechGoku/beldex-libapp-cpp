@@ -99,18 +99,18 @@ void Controller::_setup_loadState()
 {
 	property_mutex.lock();
 	{
-		optional<string> documentContentString = _givenLocked_existing_saved_documentContentString();
+		boost::optional<string> documentContentString = _givenLocked_existing_saved_documentContentString();
 		if (documentContentString == none) {
 			_givenLocked_initWithDefaults();
 		} else { // rather than returning directly from the if, so as to share the mutex.unlock()
 			auto documentJSON = Persistable::new_plaintextDocumentDictFromJSONString(*documentContentString); // move semantics, not copy
 			DocumentId this_id = string(documentJSON[_dictKey(Settings_DictKey::_id)].GetString(), documentJSON[_dictKey(Settings_DictKey::_id)].GetStringLength());
-			optional<string> specificAPIAddressURLAuthority = none_or_string_from(documentJSON, _dictKey(Settings_DictKey::specificAPIAddressURLAuthority));
-			optional<double> existingValueFor_appTimeoutAfterS = none_or_double_from(documentJSON, _dictKey(Settings_DictKey::appTimeoutAfterS_nilForDefault_orNeverValue));
-			optional<bool> authentication__requireWhenSending = none_or_bool_from(documentJSON, _dictKey(Settings_DictKey::authentication__requireWhenSending));
-			optional<bool> authentication__requireToShowWalletSecrets = none_or_bool_from(documentJSON, _dictKey(Settings_DictKey::authentication__requireToShowWalletSecrets));
-			optional<bool> authentication__tryBiometric = none_or_bool_from(documentJSON, _dictKey(Settings_DictKey::authentication__tryBiometric));
-			optional<Currencies::CurrencySymbol> displayCurrencySymbol = none_or_string_from(documentJSON, _dictKey(Settings_DictKey::displayCurrencySymbol));
+			boost::optional<string> specificAPIAddressURLAuthority = none_or_string_from(documentJSON, _dictKey(Settings_DictKey::specificAPIAddressURLAuthority));
+			boost::optional<double> existingValueFor_appTimeoutAfterS = none_or_double_from(documentJSON, _dictKey(Settings_DictKey::appTimeoutAfterS_nilForDefault_orNeverValue));
+			boost::optional<bool> authentication__requireWhenSending = none_or_bool_from(documentJSON, _dictKey(Settings_DictKey::authentication__requireWhenSending));
+			boost::optional<bool> authentication__requireToShowWalletSecrets = none_or_bool_from(documentJSON, _dictKey(Settings_DictKey::authentication__requireToShowWalletSecrets));
+			boost::optional<bool> authentication__tryBiometric = none_or_bool_from(documentJSON, _dictKey(Settings_DictKey::authentication__tryBiometric));
+			boost::optional<Currencies::CurrencySymbol> displayCurrencySymbol = none_or_string_from(documentJSON, _dictKey(Settings_DictKey::displayCurrencySymbol));
 			//
 			_givenLocked_setup_loadState(
 				this_id,
@@ -157,7 +157,7 @@ bool Controller::hasExisting_saved_document() const
 	// Here, this is not synchronized, because it's assumed that whoever is calling it is not doing so from an application code context, and is probably calling it prior to the construction of any instance
 	return _givenLocked_existing_saved_documentContentString() != none;
 }
-optional<string> Controller::_givenLocked_existing_saved_documentContentString() const
+boost::optional<string> Controller::_givenLocked_existing_saved_documentContentString() const
 {
 	auto result = allDocuments(*documentsPath, collectionName);
 	if (result.err_str) {
@@ -190,9 +190,9 @@ bool Controller::hasBooted()
 	//
 	return val;
 }
-optional<string> Controller::specificAPIAddressURLAuthority()
+boost::optional<string> Controller::specificAPIAddressURLAuthority()
 {
-	optional<string> val;
+	boost::optional<string> val;
 	property_mutex.lock();
 	val = _specificAPIAddressURLAuthority;
 	property_mutex.unlock();
@@ -245,7 +245,7 @@ double Controller::default_appTimeoutAfterS()
 {
 	return 90; // s …… 30 was a bit short for new users
 }
-optional<double> Controller::appTimeoutAfterS_noneForDefault_orNeverValue() 
+boost::optional<double> Controller::appTimeoutAfterS_noneForDefault_orNeverValue() 
 {
 	return _appTimeoutAfterS_noneForDefault_orNeverValue;
 }
@@ -295,7 +295,7 @@ document_persister::DocumentJSON Controller::_givenLocked_new_dictRepresentation
 }
 //
 // Imperatives - State
-bool Controller::set_appTimeoutAfterS_noneForDefault_orNeverValue(optional<double> value)
+bool Controller::set_appTimeoutAfterS_noneForDefault_orNeverValue(boost::optional<double> value)
 {
 	return _locked_set_save_and_emit(Settings_DictKey::appTimeoutAfterS_nilForDefault_orNeverValue, value);
 }
@@ -311,11 +311,11 @@ bool Controller::set_authentication__tryBiometric(bool value)
 {
 	return _locked_set_save_and_emit(Settings_DictKey::authentication__tryBiometric, value);
 }
-bool Controller::set_displayCurrencySymbol(optional<Currencies::CurrencySymbol> value)
+bool Controller::set_displayCurrencySymbol(boost::optional<Currencies::CurrencySymbol> value)
 {
 	return _locked_set_save_and_emit(Settings_DictKey::displayCurrencySymbol, value);
 }
-bool Controller::set_specificAPIAddressURLAuthority(optional<string> value)
+bool Controller::set_specificAPIAddressURLAuthority(boost::optional<string> value)
 {
 	return _locked_set_save_and_emit(Settings_DictKey::specificAPIAddressURLAuthority, value);
 }
@@ -347,16 +347,16 @@ void Controller::_set(Settings_DictKey key, prop_val_arg_type val)
 {
 	switch (key) {
 		case Settings_DictKey::specificAPIAddressURLAuthority:
-			_specificAPIAddressURLAuthority = boost::get<optional<string>>(val);
+			_specificAPIAddressURLAuthority = boost::get<boost::optional<string>>(val);
 			break;
 			
 		case Settings_DictKey::appTimeoutAfterS_nilForDefault_orNeverValue:
-			_appTimeoutAfterS_noneForDefault_orNeverValue = boost::get<optional<double>>(val);
+			_appTimeoutAfterS_noneForDefault_orNeverValue = boost::get<boost::optional<double>>(val);
 			break;
 			
 		case Settings_DictKey::displayCurrencySymbol:
 		{
-			optional<Currencies::CurrencySymbol> ccySymbol_orNone = boost::get<optional<Currencies::CurrencySymbol>>(val);
+			boost::optional<Currencies::CurrencySymbol> ccySymbol_orNone = boost::get<boost::optional<Currencies::CurrencySymbol>>(val);
 			_displayCurrencySymbol = ccySymbol_orNone != boost::none ? *ccySymbol_orNone : default_displayCurrencySymbol;
 		}
 		break;
@@ -433,9 +433,9 @@ void Controller::_givenLocked_initWithDefaults()
 	);
 }
 void Controller::_givenLocked_setup_loadState(
-	optional<DocumentId> arg_id,
-	optional<string> specificAPIAddressURLAuthority,
-	optional<double> appTimeoutAfterS_noneForDefault_orNeverValue,
+	boost::optional<DocumentId> arg_id,
+	boost::optional<string> specificAPIAddressURLAuthority,
+	boost::optional<double> appTimeoutAfterS_noneForDefault_orNeverValue,
 	bool authentication__requireWhenSending,
 	bool authentication__requireToShowWalletSecrets,
 	bool authentication__tryBiometric,
@@ -486,7 +486,7 @@ bool Controller::___givenLocked_saveToDisk_write()
 {
 //	throwUnlessOnSyncThread()
 	//
-	optional<string> err_str = document_persister::write(
+	boost::optional<string> err_str = document_persister::write(
 		*documentsPath,
 		Persistable::new_plaintextJSONStringFrom_movedDocumentDict(_givenLocked_new_dictRepresentation()),
 		*_id,
@@ -501,9 +501,9 @@ bool Controller::___givenLocked_saveToDisk_write()
 }
 //
 // Protocols - DeleteEverythingRegistrant
-optional<string> Controller::passwordController_DeleteEverything()
+boost::optional<string> Controller::passwordController_DeleteEverything()
 {
-	optional<string> err_str = none;
+	boost::optional<string> err_str = none;
 	property_mutex.lock();
 	{ // so as not to race with any saves
 		errOr_numRemoved result = document_persister::removeAllDocuments(*documentsPath, collectionName);
@@ -526,9 +526,9 @@ optional<string> Controller::passwordController_DeleteEverything()
 	return err_str;
 }
 // Protocols - ChangePasswordRegistrant
-optional<Passwords::EnterPW_Fn_ValidationErr_Code> Controller::passwordController_ChangePassword()
+boost::optional<Passwords::EnterPW_Fn_ValidationErr_Code> Controller::passwordController_ChangePassword()
 {
-	optional<Passwords::EnterPW_Fn_ValidationErr_Code> err_str = none;
+	boost::optional<Passwords::EnterPW_Fn_ValidationErr_Code> err_str = none;
 	property_mutex.lock();
 	{
 		if (_hasBooted != true) {

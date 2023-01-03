@@ -159,8 +159,8 @@ void HostPollingController::_fetch_addressInfo()
 		wallet_spt->spend_pub_key(),
 		wallet_spt->spend_sec_key(),
 		[weak_this] (
-			optional<string> err_str,
-			optional<HostedMonero::ParsedResult_AddressInfo> result
+			boost::optional<string> err_str,
+			boost::optional<HostedMonero::ParsedResult_AddressInfo> result
 		) {
 			if (auto inner_spt = weak_this.lock()) {
 				if (inner_spt->_requestHandleFor_addressInfo == nullptr) {
@@ -207,8 +207,8 @@ void HostPollingController::_fetch_addressTransactions()
 		wallet_spt->spend_pub_key(),
 		wallet_spt->spend_sec_key(),
 		[weak_this] (
-			optional<string> err_str,
-			optional<HostedMonero::ParsedResult_AddressTransactions> result
+			boost::optional<string> err_str,
+			boost::optional<HostedMonero::ParsedResult_AddressTransactions> result
 		) {
 			if (auto inner_spt = weak_this.lock()) {
 				if (inner_spt->_requestHandleFor_addressTransactions == nullptr) {
@@ -263,7 +263,7 @@ void HostPollingController::requestFromUI_manualRefresh()
 // Delegation - isFetchingAnyUpdates
 void HostPollingController::_didUpdate_factorOf_isFetchingAnyUpdates() // must be called manually
 {
-	optional<bool> previous_lastRecorded_isFetchingAnyUpdates = _lastRecorded_isFetchingAnyUpdates;
+	boost::optional<bool> previous_lastRecorded_isFetchingAnyUpdates = _lastRecorded_isFetchingAnyUpdates;
 	bool current_isFetchingAnyUpdates = isFetchingAnyUpdates();
 	_lastRecorded_isFetchingAnyUpdates = current_isFetchingAnyUpdates;
 	if (previous_lastRecorded_isFetchingAnyUpdates == none || *previous_lastRecorded_isFetchingAnyUpdates != current_isFetchingAnyUpdates) { // Emit

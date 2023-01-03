@@ -39,19 +39,19 @@ using namespace monero_wallet_utils;
 // Accessory types
 struct OptlErrStrCBFunctor
 { // when you pass this functor to its destination, do a std::move of it to the destination
-	std::function<void(optional<string> err_str)> fn; // do a std::move to this property manually
-	void operator()(optional<string> err_str)
+	std::function<void(boost::optional<string> err_str)> fn; // do a std::move to this property manually
+	void operator()(boost::optional<string> err_str)
 	{
 		fn(err_str);
 	}
 };
 struct LogInReqCBFunctor
 { // when you pass this functor to its destination, do a std::move of it to the destination
-	std::function<void(optional<string> err_str, optional<HostedMonero::ParsedResult_Login> result)> fn; // do a std::move to this property manually
+	std::function<void(boost::optional<string> err_str, boost::optional<HostedMonero::ParsedResult_Login> result)> fn; // do a std::move to this property manually
 	~LogInReqCBFunctor() {
 		cout << "LogInReqCBFunctor dtor" << endl;
 	}
-	void operator()(optional<string> err_str, optional<HostedMonero::ParsedResult_Login> result)
+	void operator()(boost::optional<string> err_str, boost::optional<HostedMonero::ParsedResult_Login> result)
 	{
 		if (err_str != none) {
 			fn(std::move(*err_str), none);
@@ -86,11 +86,11 @@ void Object::tearDownRuntime()
 }
 void Object::deBoot()
 {
-//	optional<uint64_t> old__totalReceived = none;
-//	optional<uint64_t> old__totalSent = none;
-//	optional<uint64_t> old__lockedBalance = none;
-//	optional<std::vector<HostedMonero::SpentOutputDescription>> old__spentOutputs = none;
-//	optional<std::vector<HostedMonero::HistoricalTxRecord>> old__transactions = none;
+//	boost::optional<uint64_t> old__totalReceived = none;
+//	boost::optional<uint64_t> old__totalSent = none;
+//	boost::optional<uint64_t> old__lockedBalance = none;
+//	boost::optional<std::vector<HostedMonero::SpentOutputDescription>> old__spentOutputs = none;
+//	boost::optional<std::vector<HostedMonero::HistoricalTxRecord>> old__transactions = none;
 //	if (_totalReceived != none) {
 //		old__totalReceived = *_totalReceived;
 //	}
@@ -140,7 +140,7 @@ void Object::deBoot()
 		___didReceiveActualChangeTo_transactions();
 		regenerate_shouldDisplayImportAccountOption();
 	}
-	optional<string> save__err_str = saveToDisk();
+	boost::optional<string> save__err_str = saveToDisk();
 	if (save__err_str != none) {
 		MERROR("Wallet: Error while saving during a deBoot(): " << *save__err_str);
 	}
@@ -148,19 +148,19 @@ void Object::deBoot()
 //
 // Runtime - Imperatives - Private - Booting
 void Object::Boot_havingLoadedDecryptedExistingInitDoc(
-	std::function<void(optional<string> err_str)> fn
+	std::function<void(boost::optional<string> err_str)> fn
 ) { // nothing to do here as we assume validation done on init
 	_trampolineFor_successfullyBooted(std::move(fn));
 }
 void Object::_setStateThatFailedToBoot(
-	optional<string> err_str
+	boost::optional<string> err_str
 ) {
 	didFailToBoot_flag = true;
 	didFailToBoot_errStr = err_str;
 }
 void Object::__trampolineFor_failedToBootWith_fnAndErrStr(
-	std::function<void(optional<string> err_str)>&& fn,
-	optional<string> err_str
+	std::function<void(boost::optional<string> err_str)>&& fn,
+	boost::optional<string> err_str
 ) {
 	_setStateThatFailedToBoot(err_str);
 	//
@@ -174,7 +174,7 @@ void Object::__trampolineFor_failedToBootWith_fnAndErrStr(
 	fn(err_str);
 }
 void Object::_trampolineFor_successfullyBooted(
-	std::function<void(optional<string> err_str)>&& fn
+	std::function<void(boost::optional<string> err_str)>&& fn
 ) {
 	if (_account_seed == none || _account_seed->empty()) {
 		MWARNING("Wallets: Wallet initialized without an account_seed.");
@@ -210,7 +210,7 @@ void Object::_trampolineFor_successfullyBooted(
 	___proceed_havingActuallyBooted__trampolineFor_successfullyBooted(std::move(fn));
 }
 void Object::___proceed_havingActuallyBooted__trampolineFor_successfullyBooted(
-	std::function<void(optional<string> err_str)>&& fn
+	std::function<void(boost::optional<string> err_str)>&& fn
 ) {
 //	DDLog.Done("Wallets", "Successfully booted \(self)")
 	_isBooted = true;
@@ -267,10 +267,10 @@ void Object::_boot_byLoggingIn(
 	const string &address,
 	const string &sec_viewKey_string,
 	const string &sec_spendKey_string,
-	optional<string> seed_orNone,
+	boost::optional<string> seed_orNone,
 	bool wasAGeneratedWallet,
 	bool persistEvenIfLoginFailed_forServerChange,
-	std::function<void(optional<string> err_str)> fn
+	std::function<void(boost::optional<string> err_str)> fn
 ) {
 	_isLoggingIn = true;
 	//
@@ -341,8 +341,8 @@ void Object::_boot_byLoggingIn(
 		persistEvenIfLoginFailed_forServerChange,
 		cb_functor
 	] (
-		optional<string> login__err_str,
-		optional<HostedMonero::ParsedResult_Login> result
+		boost::optional<string> login__err_str,
+		boost::optional<HostedMonero::ParsedResult_Login> result
 	) {
 		if (auto inner_spt = weak_this.lock()) {
 			inner_spt->_isLoggingIn = false;
@@ -368,7 +368,7 @@ void Object::_boot_byLoggingIn(
 				//
 				inner_spt->regenerate_shouldDisplayImportAccountOption(); // now this can be called
 			}
-			optional<string> saveToDisk__err_str = inner_spt->saveToDisk();
+			boost::optional<string> saveToDisk__err_str = inner_spt->saveToDisk();
 			if (saveToDisk__err_str != none) {
 				inner_spt->__trampolineFor_failedToBootWith_fnAndErrStr(
 					std::move(cb_functor),
@@ -401,7 +401,7 @@ void Object::_boot_byLoggingIn(
 void Object::Boot_byLoggingIn_givenNewlyCreatedWallet(
 	const string &walletLabel,
 	SwatchColor swatchColor,
-	std::function<void(optional<string> err_str)> fn
+	std::function<void(boost::optional<string> err_str)> fn
 ) {
 	_walletLabel = walletLabel;
 	_swatchColor = swatchColor;
@@ -425,7 +425,7 @@ void Object::Boot_byLoggingIn_existingWallet_withMnemonic(
 	SwatchColor swatchColor,
 	const string &mnemonic_string,
 	bool persistEvenIfLoginFailed_forServerChange,
-	std::function<void(optional<string> err_str)> fn
+	std::function<void(boost::optional<string> err_str)> fn
 ) {
 	_walletLabel = walletLabel;
 	_swatchColor = swatchColor;
@@ -469,7 +469,7 @@ void Object::Boot_byLoggingIn_existingWallet_withAddressAndKeys(
 	const string &sec_viewKey_string,
 	const string &sec_spendKey_string,
 	bool persistEvenIfLoginFailed_forServerChange,
-	std::function<void(optional<string> err_str)> fn
+	std::function<void(boost::optional<string> err_str)> fn
 ) {
 	_walletLabel = walletLabel;
 	_swatchColor = swatchColor;
@@ -495,7 +495,7 @@ void Object::logOutThenSaveAndLogIn()
 		_account_seed,
 		_local_wasAGeneratedWallet != none ? *_local_wasAGeneratedWallet : false,
 		true, // persistEvenIfLoginFailed_forServerChange
-		[](optional<string> err_str)
+		[](boost::optional<string> err_str)
 		{
 			if (err_str != none) {
 				MERROR("Wallets: Failed to log back in with error: " << *err_str);
@@ -537,7 +537,7 @@ void Object::regenerate_shouldDisplayImportAccountOption()
 }
 //
 // Runtime (Booted) - Imperatives - Updates
-optional<string/*err_str*/> Object::SetValuesAndSave(
+boost::optional<string/*err_str*/> Object::SetValuesAndSave(
 	string walletLabel,
 	SwatchColor swatchColor
 ) {
@@ -547,7 +547,7 @@ optional<string/*err_str*/> Object::SetValuesAndSave(
 		_walletLabel = walletLabel;
 		_swatchColor = swatchColor;
 	}
-	optional<string> err_str = saveToDisk();
+	boost::optional<string> err_str = saveToDisk();
 	if (err_str != none) {
 		return std::move(*err_str);
 	}
@@ -574,7 +574,7 @@ void Object::_manuallyInsertTransactionRecord(
 		_transactions = std::vector<HostedMonero::HistoricalTxRecord>();
 	}
 	(*_transactions).push_back(transaction); // pushing a copy
-	optional<string> err_str = saveToDisk();
+	boost::optional<string> err_str = saveToDisk();
 	if (err_str != none) {
 		return; // TODO: anything to do here? maybe saveToDisk should implement retry logic
 	}
@@ -917,7 +917,7 @@ void Object::_HostPollingController_didFetch_addressInfo(
 	_dateThatLast_fetchedAccountInfo = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
 	//
 	// Write:
-	optional<string> err_str = saveToDisk();
+	boost::optional<string> err_str = saveToDisk();
 	if (err_str != none) {
 		return; // there was an issue saving update… TODO: silence here ok for now?
 	}
@@ -1043,7 +1043,7 @@ void Object::_HostPollingController_didFetch_addressTransactions(
 	_dateThatLast_fetchedAccountTransactions = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
 	//
 	// Write:
-	optional<string> err_str = saveToDisk();
+	boost::optional<string> err_str = saveToDisk();
 	if (err_str != none) {
 		return; // there was an issue saving update… TODO: silence here ok for now?
 	}

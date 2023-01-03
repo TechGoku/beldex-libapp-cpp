@@ -40,7 +40,7 @@
 #include <sstream>
 #include <unordered_map>
 #include "monero_key_image_utils.hpp"
-#include "string_tools.h"
+#include "epee/string_tools.h"
 //
 namespace Wallets
 {

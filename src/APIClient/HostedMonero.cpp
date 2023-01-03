@@ -138,7 +138,7 @@ static string mymonero_apiAddress_authority = "api.mymonero.com:8443";
 string APIClient::final_apiAddress_authority()
 { // authority means [subdomain.]host.…[:…]
 	assert(settingsController->hasBooted());
-	optional<string> settings_authorityValue = settingsController->specificAPIAddressURLAuthority();
+	boost::optional<string> settings_authorityValue = settingsController->specificAPIAddressURLAuthority();
 	if (settings_authorityValue == none) {
 		return mymonero_apiAddress_authority;
 	}
@@ -158,8 +158,8 @@ std::shared_ptr<HTTPRequests::Handle> APIClient::logIn(
 	const string &sec_view_key,
 	bool generated_locally,
 	std::function<void(
-		optional<string> err_str,
-		optional<HostedMonero::ParsedResult_Login> result
+		boost::optional<string> err_str,
+		boost::optional<HostedMonero::ParsedResult_Login> result
 	)> fn
 ) {
 	auto params = new_parameters_forWalletRequest(address, sec_view_key);
@@ -178,7 +178,7 @@ std::shared_ptr<HTTPRequests::Handle> APIClient::logIn(
 		final_apiAddress_authority(),
 		_endpoint_path_from(LogIn),
 		std::move(params),
-		[weak_this, fn = std::move(fn)](optional<string> err_str, std::shared_ptr<HTTPRequests::ResponseJSON> res)
+		[weak_this, fn = std::move(fn)](boost::optional<string> err_str, std::shared_ptr<HTTPRequests::ResponseJSON> res)
 		{
 			if (auto inner_spt = weak_this.lock()) {
 				if (err_str != none) {
@@ -197,8 +197,8 @@ std::shared_ptr<HTTPRequests::Handle> APIClient::addressInfo(
 	const string &pub_spend_key,
 	const string &sec_spend_key,
 	std::function<void(
-		optional<string> err_str,
-		optional<HostedMonero::ParsedResult_AddressInfo> result
+		boost::optional<string> err_str,
+		boost::optional<HostedMonero::ParsedResult_AddressInfo> result
 	)> fn
 ) {
 	auto params = new_parameters_forWalletRequest(address, sec_view_key);
@@ -214,7 +214,7 @@ std::shared_ptr<HTTPRequests::Handle> APIClient::addressInfo(
 			address, sec_view_key, pub_spend_key, sec_spend_key,
 			keyImageCache
 		] (
-			optional<string> err_str,
+			boost::optional<string> err_str,
 			std::shared_ptr<HTTPRequests::ResponseJSON> res
 		) {
 			if (auto inner_spt = weak_this.lock()) {
@@ -241,8 +241,8 @@ std::shared_ptr<HTTPRequests::Handle> APIClient::addressTransactions(
 	const string &pub_spend_key,
 	const string &sec_spend_key,
 	std::function<void(
-		optional<string> err_str,
-		optional<HostedMonero::ParsedResult_AddressTransactions> result
+		boost::optional<string> err_str,
+		boost::optional<HostedMonero::ParsedResult_AddressTransactions> result
 	)> fn
 ) {
 	auto params = new_parameters_forWalletRequest(address, sec_view_key);
@@ -258,7 +258,7 @@ std::shared_ptr<HTTPRequests::Handle> APIClient::addressTransactions(
 			address, sec_view_key, pub_spend_key, sec_spend_key,
 			keyImageCache
 		] (
-			optional<string> err_str,
+			boost::optional<string> err_str,
 			std::shared_ptr<HTTPRequests::ResponseJSON> res
 		) {
 		if (auto inner_spt = weak_this.lock()) {
@@ -284,8 +284,8 @@ std::shared_ptr<HTTPRequests::Handle> APIClient::importRequestInfo(
 	const string &address,
 	const string &sec_view_key,
 	std::function<void(
-		optional<string> err_str,
-		optional<HostedMonero::ParsedResult_ImportRequestInfo> result
+		boost::optional<string> err_str,
+		boost::optional<HostedMonero::ParsedResult_ImportRequestInfo> result
 	)> fn
 ) {
 	auto params = new_parameters_forWalletRequest(address, sec_view_key);
@@ -299,7 +299,7 @@ std::shared_ptr<HTTPRequests::Handle> APIClient::importRequestInfo(
 		[
 			weak_this, fn = std::move(fn)
 		] (
-			optional<string> err_str,
+			boost::optional<string> err_str,
 			std::shared_ptr<HTTPRequests::ResponseJSON> res
 		) {
 			if (auto inner_spt = weak_this.lock()) {
@@ -307,7 +307,7 @@ std::shared_ptr<HTTPRequests::Handle> APIClient::importRequestInfo(
 					fn(std::move(*err_str), none);
 					return;
 				}
-				optional<string> feeReceiptStatus = none;
+				boost::optional<string> feeReceiptStatus = none;
 				{
 					Value::ConstMemberIterator itr = res->FindMember("status");
 					if (itr != res->MemberEnd()) {
@@ -330,7 +330,7 @@ std::shared_ptr<HTTPRequests::Handle> APIClient::importRequestInfo(
 std::shared_ptr<HTTPRequests::Handle> APIClient::unspentOuts(
 	HTTPRequests::ReqParams parameters,
 	std::function<void(
-		optional<string> err_str,
+		boost::optional<string> err_str,
 		std::shared_ptr<HTTPRequests::ResponseJSON> response_data
 	)> fn
 ) {
@@ -366,7 +366,7 @@ std::shared_ptr<HTTPRequests::Handle> APIClient::unspentOuts(
 		[
 			weak_this, fn = std::move(fn)
 		] (
-			optional<string> err_str,
+			boost::optional<string> err_str,
 			std::shared_ptr<HTTPRequests::ResponseJSON> res
 		) {
 			if (auto inner_spt = weak_this.lock()) {
@@ -383,7 +383,7 @@ std::shared_ptr<HTTPRequests::Handle> APIClient::unspentOuts(
 std::shared_ptr<HTTPRequests::Handle> APIClient::randomOuts(
 	HTTPRequests::ReqParams parameters,
 	std::function<void(
-		optional<string> err_str,
+		boost::optional<string> err_str,
 		std::shared_ptr<HTTPRequests::ResponseJSON> response_data
 	)> fn
 ) {
@@ -408,7 +408,7 @@ std::shared_ptr<HTTPRequests::Handle> APIClient::randomOuts(
 		[
 			weak_this, fn = std::move(fn)
 		] (
-			optional<string> err_str,
+			boost::optional<string> err_str,
 			std::shared_ptr<HTTPRequests::ResponseJSON> res
 		) {
 			if (auto inner_spt = weak_this.lock()) {
@@ -425,7 +425,7 @@ std::shared_ptr<HTTPRequests::Handle> APIClient::randomOuts(
 std::shared_ptr<HTTPRequests::Handle> APIClient::submitTx(
 	HTTPRequests::ReqParams parameters,
 	std::function<void(
-		optional<string> err_str,
+		boost::optional<string> err_str,
 		std::shared_ptr<HTTPRequests::ResponseJSON> response_data
 	)> fn
 ) {
@@ -450,7 +450,7 @@ std::shared_ptr<HTTPRequests::Handle> APIClient::submitTx(
 		[
 			weak_this, fn = std::move(fn)
 		] (
-			optional<string> err_str,
+			boost::optional<string> err_str,
 			std::shared_ptr<HTTPRequests::ResponseJSON> res
 		) {
 			if (auto inner_spt = weak_this.lock()) {

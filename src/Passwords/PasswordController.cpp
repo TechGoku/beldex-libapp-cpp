@@ -67,7 +67,7 @@ const std::string &_dictKey(DictKey fromKey)
 }
 //
 // Accessors - Interfaces - PasswordProvider
-optional<Password> Controller::getPassword() const
+boost::optional<Password> Controller::getPassword() const
 {
    return _password;
 }
@@ -423,9 +423,9 @@ void Controller::givenBooted_initiateGetNewOrExistingPasswordFromUserAndEmitIt()
 			isForAuthorizingAppActionOnly, // false
 			none, // customNavigationBarTitle
 			[weak_this] (
-				optional<bool> didCancel_orNone,
-				optional<EnterPW_Fn_ValidationErr_Code> validationErr_orNone,
-				optional<Password> obtainedPasswordString
+				boost::optional<bool> didCancel_orNone,
+				boost::optional<EnterPW_Fn_ValidationErr_Code> validationErr_orNone,
+				boost::optional<Password> obtainedPasswordString
 			) -> void {
 				if (auto inner_spt = weak_this.lock()) {
 					if (validationErr_orNone != none) { // takes precedence over cancel
@@ -442,7 +442,7 @@ void Controller::givenBooted_initiateGetNewOrExistingPasswordFromUserAndEmitIt()
 						inner_spt->unguard_getNewOrExistingPassword();
 						return; // just silently exit after unguarding
 					}
-					optional<std::string> decryptedString = Persistable::new_plaintextStringFrom(
+					boost::optional<std::string> decryptedString = Persistable::new_plaintextStringFrom(
 						*inner_spt->_messageAsEncryptedDataForUnlockChallenge_base64String,
 						*obtainedPasswordString
 					);
@@ -476,7 +476,7 @@ void Controller::givenBooted_initiateGetNewOrExistingPasswordFromUserAndEmitIt()
 // Runtime - Imperatives - Password verification
 void Controller::initiate_verifyUserAuthenticationForAction(
 	bool tryBiometrics,
-	optional<string> customNavigationBarTitle_orNone,
+	boost::optional<string> customNavigationBarTitle_orNone,
 	std::function<void()> canceled_fn,
 	std::function<void()> entryAttempt_succeeded_fn
 ) {
@@ -522,9 +522,9 @@ void Controller::_proceedTo_authenticateVia_passphrase()
 		true, // isForAuthorizingAppActionOnly
 		_waitingForAuth_customNavigationBarTitle_orNone,
 		[weak_this] (
-			optional<bool> didCancel_orNone,
-			optional<EnterPW_Fn_ValidationErr_Code> validationErrCode_orNone,
-			optional<Password> entered_existingPassword
+			boost::optional<bool> didCancel_orNone,
+			boost::optional<EnterPW_Fn_ValidationErr_Code> validationErrCode_orNone,
+			boost::optional<Password> entered_existingPassword
 		) {
 			if (auto inner_spt = weak_this.lock()) {
 				if (validationErrCode_orNone != none) { // takes precedence over cancel
@@ -595,11 +595,11 @@ void Controller::unguard_getNewOrExistingPassword()
 void Controller::_getUserToEnterTheirExistingPassword(
 	bool isForChangePassword,
 	bool isForAuthorizingAppActionOnly,
-	optional<string> customNavigationBarTitle,
+	boost::optional<string> customNavigationBarTitle,
 	std::function<void(
-		optional<bool> didCancel_orNone,
-		optional<EnterPW_Fn_ValidationErr_Code> validationErr_orNone,
-		optional<Password> obtainedPasswordString
+		boost::optional<bool> didCancel_orNone,
+		boost::optional<EnterPW_Fn_ValidationErr_Code> validationErr_orNone,
+		boost::optional<Password> obtainedPasswordString
 	)> fn
 ) {
 	if (isWaitingFor_enterExistingPassword_cb) {
@@ -668,7 +668,7 @@ void Controller::enterExistingPassword_cb(boost::optional<bool> didCancel_orNone
 		BOOST_THROW_EXCEPTION(logic_error("_getUserToEnterTheirExistingPassword: expected enterExistingPassword_final_fn != none"));
 		return;
 	}
-	optional<EnterPW_Fn_ValidationErr_Code> validationErrCode_orNone = none; // so far…
+	boost::optional<EnterPW_Fn_ValidationErr_Code> validationErrCode_orNone = none; // so far…
 	if (didCancel_orNone == none || *didCancel_orNone == false) { // so user did NOT cancel
 		// user did not cancel… let's check if we need to send back a pre-emptive validation err (such as because they're trying too much)
 		if (_isCurrentlyLockedOutFromPWEntryAttempts == false) {
@@ -803,7 +803,7 @@ void Controller::enterNewPasswordAndType_cb(boost::optional<bool> didCancel_orNo
 		return; // prevent fallthrough
 	}
 	// then, it's a change password
-	optional<EnterPW_Fn_ValidationErr_Code> changePassword_err_orNone = _changePassword_tellRegistrants_doChangePassword(); // returns error
+	boost::optional<EnterPW_Fn_ValidationErr_Code> changePassword_err_orNone = _changePassword_tellRegistrants_doChangePassword(); // returns error
 	if (changePassword_err_orNone == none) { // actual success - we can return early
 		isWaitingFor_enterNewPassword_cb = false; // terminal state - no longer waiting
 		//
@@ -824,11 +824,11 @@ void Controller::enterNewPasswordAndType_cb(boost::optional<bool> didCancel_orNo
 	}
 	_passwordType = _preexistingBeforeSetNew_passwordType;
 	//
-	optional<string> revert_save_errStr_orNone = saveToDisk();
+	boost::optional<string> revert_save_errStr_orNone = saveToDisk();
 	if (revert_save_errStr_orNone != none) {
 		BOOST_THROW_EXCEPTION(logic_error("Couldn't saveToDisk to revert failed changePassword")); // in debug mode, treat this as fatal
 	} else { // continue trying to revert
-		optional<EnterPW_Fn_ValidationErr_Code> revert_registrantsChangePw_err_orNone = _changePassword_tellRegistrants_doChangePassword(); // this may well fail
+		boost::optional<EnterPW_Fn_ValidationErr_Code> revert_registrantsChangePw_err_orNone = _changePassword_tellRegistrants_doChangePassword(); // this may well fail
 		if (revert_registrantsChangePw_err_orNone != none) {
 			BOOST_THROW_EXCEPTION(logic_error("Some registrants couldn't revert failed changePassword")); // in debug mode, treat this as fatal
 		} else {
@@ -841,7 +841,7 @@ void Controller::enterNewPasswordAndType_cb(boost::optional<bool> didCancel_orNo
 }
 //
 // Imperatives - Persistence
-optional<string>/*err_str*/ Controller::saveToDisk()
+boost::optional<string>/*err_str*/ Controller::saveToDisk()
 {
 	if (_password == none) {
 		return string("Code fault: saveToDisk musn't be called until a password has been set");
@@ -870,7 +870,7 @@ optional<string>/*err_str*/ Controller::saveToDisk()
 		persistableDocument.AddMember(k, v, persistableDocument.GetAllocator());
 	}
 	const std::string plaintextString = Persistable::new_plaintextJSONStringFrom_movedDocumentDict(persistableDocument);
-	optional<string> err_str = document_persister::write(*documentsPath, plaintextString, *_id, collectionName);
+	boost::optional<string> err_str = document_persister::write(*documentsPath, plaintextString, *_id, collectionName);
 	if (err_str != none) {
 		MERROR("Passwords: Error while persisting " << *err_str);
 	}
@@ -941,9 +941,9 @@ void Controller::initiate_changePassword()
 				false, // isForAuthorizingAppActionOnly
 				none, // customNavigationBarTitle
 				[weak_this, isForChangePassword] (
-					optional<bool> didCancel_orNone,
-					optional<EnterPW_Fn_ValidationErr_Code> validationErr_orNone,
-					optional<Password> obtainedPasswordString
+					boost::optional<bool> didCancel_orNone,
+					boost::optional<EnterPW_Fn_ValidationErr_Code> validationErr_orNone,
+					boost::optional<Password> obtainedPasswordString
 				) -> void {
 					if (auto inner_inner_spt = weak_this.lock()) {
 						if (validationErr_orNone != none) { // takes precedence over cancel
@@ -978,10 +978,10 @@ void Controller::initiate_changePassword()
 		}
 	});
 }
-optional<EnterPW_Fn_ValidationErr_Code> Controller::_changePassword_tellRegistrants_doChangePassword()
+boost::optional<EnterPW_Fn_ValidationErr_Code> Controller::_changePassword_tellRegistrants_doChangePassword()
 {
 	for (std::vector<ChangePasswordRegistrant *>::iterator it = ptrsTo_changePasswordRegistrants.begin(); it != ptrsTo_changePasswordRegistrants.end(); ++it) {
-		optional<EnterPW_Fn_ValidationErr_Code> registrant__err_code = (*it)->passwordController_ChangePassword();
+		boost::optional<EnterPW_Fn_ValidationErr_Code> registrant__err_code = (*it)->passwordController_ChangePassword();
 		if (registrant__err_code != none) {
 			return *registrant__err_code;
 		}
@@ -1025,7 +1025,7 @@ void Controller::initiateDeleteEverything()
 	std::weak_ptr<Controller> weak_this = shared_this;
 	_deconstructBootedStateAndClearPassword(
 		true, // isForADeleteEverything
-		[weak_this](std::function<void(optional<string> err_str)> cb) {
+		[weak_this](std::function<void(boost::optional<string> err_str)> cb) {
 			if (auto inner_spt = weak_this.lock()) {
 				// reset state cause we're going all the way back to pre-boot
 				inner_spt->hasBooted = false; // require this pw controller to boot
@@ -1035,7 +1035,7 @@ void Controller::initiateDeleteEverything()
 				//
 				// first have registrants delete everything
 				for (std::vector<DeleteEverythingRegistrant *>::iterator it = inner_spt->ptrsTo_deleteEverythingRegistrants.begin(); it != inner_spt->ptrsTo_deleteEverythingRegistrants.end(); ++it) {
-					optional<string> registrant__err_str = (*it)->passwordController_DeleteEverything();
+					boost::optional<string> registrant__err_str = (*it)->passwordController_DeleteEverything();
 					if (registrant__err_str != none) {
 						cb(registrant__err_str);
 						return;
@@ -1054,7 +1054,7 @@ void Controller::initiateDeleteEverything()
 				cb(none);
 			}
 		},
-		[weak_this](optional<string> err_str) {
+		[weak_this](boost::optional<string> err_str) {
 			if (err_str != none) {
 				MERROR("Passwords: Error while deleting everything: " << *err_str);
 				BOOST_THROW_EXCEPTION(logic_error("Error while deleting everything"));
@@ -1087,20 +1087,20 @@ void Controller::lockDownAppAndRequirePassword()
 // Runtime - Imperatives - Boot-state deconstruction/teardown
 void Controller::_deconstructBootedStateAndClearPassword(
 	bool isForADeleteEverything,
-	std::function<void(std::function<void(optional<string> err_str)> cb)> optl__hasFiredWill_fn,
-	std::function<void(optional<string> err_str)> optl__fn
+	std::function<void(std::function<void(boost::optional<string> err_str)> cb)> optl__hasFiredWill_fn,
+	std::function<void(boost::optional<string> err_str)> optl__fn
 ) {
 	auto hasFiredWill_fn = optl__hasFiredWill_fn
 		? optl__hasFiredWill_fn
-		: [](std::function<void(optional<string> err_str)> cb) { cb(none); };
-	auto fn = optl__fn ? optl__fn : [](optional<string> err_str) {};
+		: [](std::function<void(boost::optional<string> err_str)> cb) { cb(none); };
+	auto fn = optl__fn ? optl__fn : [](boost::optional<string> err_str) {};
 	//
 	// TODO:? do we need to cancel any waiting functions here? not sure it would be possible to have any (unless code fault)…… we'd only deconstruct the booted state and pop the enter pw screen here if we had already booted before - which means there shouldn't be such waiting functions - so maybe assert that here - which requires hanging onto those functions somehow
 	willDeconstructBootedStateAndClearPassword_signal(isForADeleteEverything); // indicate to consumers they should tear down and await the "did" event to re-request
 	//
 	std::shared_ptr<Controller> shared_this = shared_from_this();
 	std::weak_ptr<Controller> weak_this = shared_this;
-	hasFiredWill_fn([fn = std::move(fn), weak_this](optional<string> err_str) {
+	hasFiredWill_fn([fn = std::move(fn), weak_this](boost::optional<string> err_str) {
 		if (auto inner_spt = weak_this.lock()) {
 			if (err_str != none) {
 				fn(std::move(*err_str));

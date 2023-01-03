@@ -130,7 +130,7 @@ void FormSubmissionController::handle()
 		this->parameters.failure_fn(codeFault_manualPaymentID_while_hasPickedAContact, boost::none, boost::none, boost::none, boost::none);
 		return;
 	}
-	optional<string> paymentID_toUseOrToNilIfIntegrated = boost::none; // may be nil
+	boost::optional<string> paymentID_toUseOrToNilIfIntegrated = boost::none; // may be nil
 	if (canUseManualPaymentID) {
 		paymentID_toUseOrToNilIfIntegrated = this->parameters.manuallyEnteredPaymentID.get();
 	}
@@ -152,7 +152,7 @@ void FormSubmissionController::handle()
 
 	// sending to contact currently does not work along with sending to multiple addresses
 	if (this->parameters.hasPickedAContact) { // we have already re-resolved the payment_id
-		optional<string> xmrAddress_toDecode = boost::none;
+		boost::optional<string> xmrAddress_toDecode = boost::none;
 		if (this->parameters.contact_payment_id != boost::none) {
 			paymentID_toUseOrToNilIfIntegrated = this->parameters.contact_payment_id.get();
 		}
@@ -190,7 +190,7 @@ void FormSubmissionController::handle()
                 	if (decode_retVals.isSubaddress != true) { // this is critical or funds will be lost!!
                         	if (paymentID_toUseOrToNilIfIntegrated->size() == monero_paymentID_utils::payment_id_length__short) { // a short one
                                 	THROW_WALLET_EXCEPTION_IF(decode_retVals.isSubaddress, error::wallet_internal_error, "Expected !decode_retVals.isSubaddress"); // just an extra safety measure
-                               		optional<string> fabricated_integratedAddress_orNone = monero::address_utils::new_integratedAddrFromStdAddr( // construct integrated address
+                               		boost::optional<string> fabricated_integratedAddress_orNone = monero::address_utils::new_integratedAddrFromStdAddr( // construct integrated address
                                         	*xmrAddress_toDecode, // the monero one
                                         	*paymentID_toUseOrToNilIfIntegrated, // short pid
                                         	this->parameters.nettype
@@ -231,7 +231,7 @@ void FormSubmissionController::handle()
 			else if (paymentID_toUseOrToNilIfIntegrated != boost::none && paymentID_toUseOrToNilIfIntegrated->empty() == false && decode_retVals.isSubaddress &&
 				 paymentID_toUseOrToNilIfIntegrated->size() == monero_paymentID_utils::payment_id_length__short) {
                                 	THROW_WALLET_EXCEPTION_IF(decode_retVals.isSubaddress, error::wallet_internal_error, "Expected !decode_retVals.isSubaddress"); // just an extra safety measure
-                                	optional<string> fabricated_integratedAddress_orNone = monero::address_utils::new_integratedAddrFromStdAddr( // construct integrated address
+                                	boost::optional<string> fabricated_integratedAddress_orNone = monero::address_utils::new_integratedAddrFromStdAddr( // construct integrated address
                                         	xmrAddress_toDecode, // the monero one
                                         	*paymentID_toUseOrToNilIfIntegrated, // short pid
                                         	this->parameters.nettype
@@ -290,7 +290,7 @@ void FormSubmissionController::cb__authentication(bool did_pass)
 	}
 	this->_proceedTo_generateSendTransaction();
 }
-void FormSubmissionController::cb_I__got_unspent_outs(optional<string> err_msg, const optional<property_tree::ptree> &res)
+void FormSubmissionController::cb_I__got_unspent_outs(boost::optional<string> err_msg, const boost::optional<property_tree::ptree> &res)
 {
 	if (err_msg != boost::none && err_msg->empty() == false) {
 		this->parameters.failure_fn(errInServerResponse_withMsg, err_msg.get(), boost::none, boost::none, boost::none);
@@ -387,8 +387,8 @@ void FormSubmissionController::_reenterable_construct_and_send_tx()
 	}
 }
 void FormSubmissionController::cb_II__got_random_outs(
-	optional<string> err_msg,
-	const optional<property_tree::ptree> &res
+	boost::optional<string> err_msg,
+	const boost::optional<property_tree::ptree> &res
 ) {
 	if (err_msg != boost::none && err_msg->empty() == false) {
 		this->parameters.failure_fn(errInServerResponse_withMsg, err_msg.get(), boost::none, boost::none, boost::none);
@@ -488,7 +488,7 @@ void FormSubmissionController::cb_II__got_random_outs(
 	};
 	this->submit_raw_tx(req_params); // wait for cb III
 }
-void FormSubmissionController::cb_III__submitted_tx(optional<string> err_msg)
+void FormSubmissionController::cb_III__submitted_tx(boost::optional<string> err_msg)
 {
 	if (err_msg != boost::none && err_msg->empty() == false) {
 		this->parameters.failure_fn(errInServerResponse_withMsg, err_msg.get(), boost::none, boost::none, boost::none);
@@ -502,7 +502,7 @@ void FormSubmissionController::cb_III__submitted_tx(optional<string> err_msg)
 	success_retVals.total_sent = *(this->step1_retVals__final_total_wo_fee) + *(this->step1_retVals__using_fee);
 	success_retVals.mixin = *(this->step1_retVals__mixin);
 	{
-		optional<string> returning__payment_id = this->payment_id_string; // separated from submit_raw_tx_fn so that it can be captured w/o capturing all of args
+		boost::optional<string> returning__payment_id = this->payment_id_string; // separated from submit_raw_tx_fn so that it can be captured w/o capturing all of args
 		if (returning__payment_id == boost::none) {
 			auto decoded = monero::address_utils::decodedAddress(this->to_address_strings[0], this->parameters.nettype);
 			if (decoded.did_error) { // would be very strange...
