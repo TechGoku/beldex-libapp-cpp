@@ -329,6 +329,7 @@ void FormSubmissionController::cb_I__got_unspent_outs(boost::optional<string> er
 	}
 	this->unspent_outs = std::move(*(parsed_res.unspent_outs));
 	this->fee_per_b = *(parsed_res.per_byte_fee);
+	this->fee_per_o = *(parsed_res.fee_per_output);
 	this->fee_mask = *(parsed_res.fee_mask);
 	this->use_fork_rules = monero_fork_rules::make_use_fork_rules_fn(parsed_res.fork_version);
 	//
@@ -353,6 +354,7 @@ void FormSubmissionController::_reenterable_construct_and_send_tx()
 		this->use_fork_rules,
 		this->unspent_outs,
 		this->fee_per_b,
+		this->fee_per_o,
 		this->fee_mask,
 		//
 		this->prior_attempt_size_calcd_fee, // use this for passing step2 "must-reconstruct" return values back in, i.e. re-entry; when none, defaults to attempt at network min
@@ -434,6 +436,7 @@ void FormSubmissionController::cb_II__got_random_outs(
 		this->parameters.priority,
 		this->step1_retVals__using_outs,
 		this->fee_per_b,
+		this->fee_per_o,
 		this->fee_mask,
 		tie_outs_to_mix_outs_retVals.mix_outs,
 		this->use_fork_rules,
