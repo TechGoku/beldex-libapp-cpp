@@ -72,8 +72,8 @@ namespace HostedMonero
 			const string &sec_view_key,
 			bool generated_locally,
 			std::function<void(
-				optional<string> err_str,
-				optional<HostedMonero::ParsedResult_Login> result
+				boost::optional<string> err_str,
+				boost::optional<HostedMonero::ParsedResult_Login> result
 			)> fn
 		);
 		std::shared_ptr<HTTPRequests::Handle> addressInfo(
@@ -83,8 +83,8 @@ namespace HostedMonero
 			const string &pub_spend_key,
 			const string &sec_spend_key,
 			std::function<void(
-				optional<string> err_str,
-				optional<HostedMonero::ParsedResult_AddressInfo> result
+				boost::optional<string> err_str,
+				boost::optional<HostedMonero::ParsedResult_AddressInfo> result
 			)> fn
 		);
 		std::shared_ptr<HTTPRequests::Handle> addressTransactions(
@@ -94,36 +94,36 @@ namespace HostedMonero
 			const string &pub_spend_key,
 			const string &sec_spend_key,
 			std::function<void(
-				optional<string> err_str,
-				optional<HostedMonero::ParsedResult_AddressTransactions> result
+				boost::optional<string> err_str,
+				boost::optional<HostedMonero::ParsedResult_AddressTransactions> result
 			)> fn
 		);
 		std::shared_ptr<HTTPRequests::Handle> importRequestInfo(
 			const string &address,
 			const string &sec_view_key,
 			std::function<void(
-				optional<string> err_str,
-				optional<HostedMonero::ParsedResult_ImportRequestInfo> result
+				boost::optional<string> err_str,
+				boost::optional<HostedMonero::ParsedResult_ImportRequestInfo> result
 			)> fn
 		);
 		std::shared_ptr<HTTPRequests::Handle> unspentOuts(
 			HTTPRequests::ReqParams parameters,
 			std::function<void(
-				optional<string> err_str,
+				boost::optional<string> err_str,
 				std::shared_ptr<HTTPRequests::ResponseJSON> response_data
 			)> fn
 		);
 		std::shared_ptr<HTTPRequests::Handle> randomOuts(
 			HTTPRequests::ReqParams parameters,
 			std::function<void(
-				optional<string> err_str,
+				boost::optional<string> err_str,
 				std::shared_ptr<HTTPRequests::ResponseJSON> response_data
 			)> fn
 		);
 		std::shared_ptr<HTTPRequests::Handle> submitTx(
 			HTTPRequests::ReqParams parameters,
 			std::function<void(
-			optional<string> err_str,
+			boost::optional<string> err_str,
 			std::shared_ptr<HTTPRequests::ResponseJSON> response_data
 			)> fn
 		);

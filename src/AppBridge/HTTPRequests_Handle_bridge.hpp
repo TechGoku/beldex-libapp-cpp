@@ -58,7 +58,7 @@ namespace HTTPRequests
 			string host,
 			string port,
 			string endpoint_path,
-			std::function<void(optional<string> err_str, std::shared_ptr<ResponseJSON> res)> fn
+			std::function<void(boost::optional<string> err_str, std::shared_ptr<ResponseJSON> res)> fn
 		):
 		_bridge(bridge),
 		_host(host),
@@ -108,7 +108,7 @@ namespace HTTPRequests
 		string _host;
 		string _port;
 		string _endpoint_path;
-		std::function<void(optional<string> err_str, std::shared_ptr<rapidjson::Document> res)> _fn;
+		std::function<void(boost::optional<string> err_str, std::shared_ptr<rapidjson::Document> res)> _fn;
 		//
 		// Runtime
 		bool _isConnectionClosed = false;
@@ -122,7 +122,7 @@ namespace HTTPRequests
 			_call_fn_with(none);
 		}
 		void _call_fn_with(
-						   optional<string> err_str
+						   boost::optional<string> err_str
 						   ) {
 			assert(_hasFNBeenCalled == false);
 			_hasFNBeenCalled = true;

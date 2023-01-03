@@ -94,7 +94,7 @@ std::vector<Wallets::SwatchColor> ListController_Base::givenBooted_swatchesInUse
 // Booted - Imperatives - Public - Wallets list
 void ListController_Base::CreateNewWallet_NoBootNoListAdd(
 	string localeCode,
-	std::function<void(optional<string> err, std::shared_ptr<Wallets::Object> walletInstance)> fn
+	std::function<void(boost::optional<string> err, std::shared_ptr<Wallets::Object> walletInstance)> fn
 ) {
 	monero_wallet_utils::WalletDescriptionRetVals retVals;
 	bool r = monero_wallet_utils::convenience__new_wallet_with_language_code(
@@ -127,7 +127,7 @@ void ListController_Base::OnceBooted_ObtainPW_AddNewlyGeneratedWallet_externally
 	std::shared_ptr<Wallets::Object> walletInstance,
 	string walletLabel,
 	Wallets::SwatchColor swatchColor,
-	std::function<void(optional<string> err_str, std::shared_ptr<Wallets::Object> walletInstance)>&& fn,
+	std::function<void(boost::optional<string> err_str, std::shared_ptr<Wallets::Object> walletInstance)>&& fn,
 	std::function<void()>&& userCanceledPasswordEntry_fn
 ) {
 	std::weak_ptr<Wallets::Object> weak_wallet(walletInstance);
@@ -151,7 +151,7 @@ void ListController_Base::OnceBooted_ObtainPW_AddNewlyGeneratedWallet_externally
 							walletInstance->Boot_byLoggingIn_givenNewlyCreatedWallet(
 								walletLabel,
 								swatchColor,
-								[weak_this, fn = std::move(fn), weak_wallet](optional<string> err_str)
+								[weak_this, fn = std::move(fn), weak_wallet](boost::optional<string> err_str)
 								{
 									if (err_str != none) {
 										fn(*err_str, nullptr);
@@ -187,9 +187,9 @@ void ListController_Base::OnceBooted_ObtainPW_AddExtantWalletWith_MnemonicString
 	Wallets::SwatchColor swatchColor,
 	string mnemonicString,
 	std::function<void(
-		optional<string> err_str,
+		boost::optional<string> err_str,
 		std::shared_ptr<Wallets::Object> walletInstance,
-		optional<bool> wasWalletAlreadyInserted
+		boost::optional<bool> wasWalletAlreadyInserted
 	)> fn,
 	std::function<void()> userCanceledPasswordEntry_fn
 ) {
@@ -244,7 +244,7 @@ void ListController_Base::OnceBooted_ObtainPW_AddExtantWalletWith_MnemonicString
 						swatchColor,
 						mnemonicString,
 						false, // persistEvenIfLoginFailed_forServerChange
-						[weak_this, fn = std::move(fn), retained_wallet_instance_id] (optional<string> err_str) {
+						[weak_this, fn = std::move(fn), retained_wallet_instance_id] (boost::optional<string> err_str) {
 							if (auto inner_inner_inner_spt = weak_this.lock()) {
 								auto retained_wallet =  inner_inner_inner_spt->__retainedWalletsWaitingToLogIn_byInstanceId[retained_wallet_instance_id];
 								inner_inner_inner_spt->__retainedWalletsWaitingToLogIn_byInstanceId.erase(retained_wallet_instance_id); // important
@@ -283,9 +283,9 @@ void ListController_Base::OnceBooted_ObtainPW_AddExtantWalletWith_AddressAndKeys
 	string sec_view_key,
 	string sec_spend_key,
 	std::function<void(
-		optional<string> err_str,
+		boost::optional<string> err_str,
 		std::shared_ptr<Wallets::Object> walletInstance,
-		optional<bool> wasWalletAlreadyInserted
+		boost::optional<bool> wasWalletAlreadyInserted
 	)> fn,
 	std::function<void()> userCanceledPasswordEntry_fn
 ) {
@@ -331,7 +331,7 @@ void ListController_Base::OnceBooted_ObtainPW_AddExtantWalletWith_AddressAndKeys
 						sec_view_key,
 						sec_spend_key,
 						false, // persistEvenIfLoginFailed_forServerChange
-						[weak_this, fn = std::move(fn), retained_wallet_instance_id] (optional<string> err_str)
+						[weak_this, fn = std::move(fn), retained_wallet_instance_id] (boost::optional<string> err_str)
 						{
 							if (auto inner_inner_inner_spt = weak_this.lock()) {
 								auto retained_wallet =  inner_inner_inner_spt->__retainedWalletsWaitingToLogIn_byInstanceId[retained_wallet_instance_id];

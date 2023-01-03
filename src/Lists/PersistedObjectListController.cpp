@@ -63,7 +63,7 @@ void Controller::setup_tryToBoot()
 {
 	std::shared_ptr<Controller> shared_this = get_shared_ptr_from_this();
 	std::weak_ptr<Controller> weak_this = shared_this;
-	overridable_deferBootUntil([weak_this](optional<string> err_str)
+	overridable_deferBootUntil([weak_this](boost::optional<string> err_str)
 	{
 		if (err_str != none) {
 			BOOST_THROW_EXCEPTION(logic_error(*err_str));
@@ -138,7 +138,7 @@ void Controller::setup_fetchAndReconstituteExistingRecords()
 				return;
 			}
 			for (auto it = (*(err_orJSONStrings.content_strings)).begin(); it != (*(err_orJSONStrings.content_strings)).end(); it++) {
-				optional<string> plaintext_documentContentString = Persistable::new_plaintextStringFrom(
+				boost::optional<string> plaintext_documentContentString = Persistable::new_plaintextStringFrom(
 					*it,
 					*(inner_spt->passwordController->getPassword())
 				);
@@ -267,13 +267,13 @@ void Controller::_callAndFlushAllBlocksWaitingForBootToExecute()
 }
 //
 // Imperatives - Delete
-optional<string> Controller::givenBooted_delete(Persistable::Object &object)
+boost::optional<string> Controller::givenBooted_delete(Persistable::Object &object)
 {
 	if (!_hasBooted) {
 		BOOST_THROW_EXCEPTION(logic_error("Expected _hasBooted by givenBooted_delete call"));
 		return string("Logic error");
 	}
-	optional<string> err_str = object.deleteFromDisk();
+	boost::optional<string> err_str = object.deleteFromDisk();
 	if (err_str == none) { // remove / release
 		_removeFromList(object);
 		//
@@ -282,13 +282,13 @@ optional<string> Controller::givenBooted_delete(Persistable::Object &object)
 		return std::move(*err_str);
 	}
 }
-optional<string> Controller::givenBooted_delete_noListUpdatedNotify(Persistable::Object &object)
+boost::optional<string> Controller::givenBooted_delete_noListUpdatedNotify(Persistable::Object &object)
 {
 	if (!_hasBooted) {
 		BOOST_THROW_EXCEPTION(logic_error("Expected _hasBooted by givenBooted_delete call"));
 		return string("Logic error");
 	}
-	optional<string> err_str = object.deleteFromDisk();
+	boost::optional<string> err_str = object.deleteFromDisk();
 	if (err_str == none) { // remove / release
 		_removeFromList_noListUpdatedNotify(object);
 	}
@@ -389,7 +389,7 @@ void Controller::PasswordController_didDeconstructBootedStateAndClearPassword()
 }
 //
 // Protocols - DeleteEverythingRegistrant
-optional<string> Controller::passwordController_DeleteEverything()
+boost::optional<string> Controller::passwordController_DeleteEverything()
 {
 	errOr_numRemoved result = document_persister::removeAllDocuments(*documentsPath, _listedObjectTypeCollectionName);
 	if (result.err_str != none) {
@@ -404,7 +404,7 @@ optional<string> Controller::passwordController_DeleteEverything()
 }
 //
 // Protocols - ChangePasswordRegistrant
-optional<Passwords::EnterPW_Fn_ValidationErr_Code> Controller::passwordController_ChangePassword()
+boost::optional<Passwords::EnterPW_Fn_ValidationErr_Code> Controller::passwordController_ChangePassword()
 {
 	if (_hasBooted != true) {
 		MWARNING("Lists: Controller asked to change password but not yet booted.");
@@ -424,7 +424,7 @@ optional<Passwords::EnterPW_Fn_ValidationErr_Code> Controller::passwordControlle
 				return Passwords::EnterPW_Fn_ValidationErr_Code::unexpectedState;
 			}
 			// by here, we've checked if the record had a problem booting or initializing
-			optional<string> err_str = (*it)->saveToDisk();
+			boost::optional<string> err_str = (*it)->saveToDisk();
 			if (err_str != none) { // err_str is logged
 				_records_mutex.unlock(); // Critical: must unlock
 				return Passwords::EnterPW_Fn_ValidationErr_Code::saveError;

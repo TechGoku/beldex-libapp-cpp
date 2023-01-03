@@ -52,7 +52,7 @@ namespace Settings
 		// Constants - Default values
 		virtual double default_appTimeoutAfterS() = 0;
 		// Properties
-		virtual optional<double> appTimeoutAfterS_noneForDefault_orNeverValue() = 0;
+		virtual boost::optional<double> appTimeoutAfterS_noneForDefault_orNeverValue() = 0;
 	};
 }
 
