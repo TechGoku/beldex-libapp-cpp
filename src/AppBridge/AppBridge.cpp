@@ -158,13 +158,13 @@ void _exec_PasswordController(
 	const Value &params
 ) {
 	if (cmdName == PasswordController__enterExistingPassword_cb) {
-		optional<bool> v_1 = none;
+		boost::optional<bool> v_1 = none;
 		Value::ConstMemberIterator itr_1 = params.GetObject().FindMember(PasswordController_k__didCancel_orNone);
 		if (itr_1 != params.GetObject().MemberEnd()) {
 			v_1 = itr_1->value.GetBool();
 		}
 		//
-		optional<string> v_2 = none;
+		boost::optional<string> v_2 = none;
 		Value::ConstMemberIterator itr_2 = params.GetObject().FindMember(PasswordController_k__obtainedPasswordString);
 		if (itr_2 != params.GetObject().MemberEnd()) {
 			v_2 = string(itr_2->value.GetString(), itr_2->value.GetStringLength());
@@ -176,19 +176,19 @@ void _exec_PasswordController(
 		// finally, exit so as not to trip the assert
 		return;
 	} else if (cmdName == PasswordController__enterNewPasswordAndType_cb) {
-		optional<bool> v_1 = none;
+		boost::optional<bool> v_1 = none;
 		Value::ConstMemberIterator itr_1 = params.GetObject().FindMember(PasswordController_k__didCancel_orNone);
 		if (itr_1 != params.GetObject().MemberEnd()) {
 			v_1 = itr_1->value.GetBool();
 		}
 		//
-		optional<string> v_2 = none;
+		boost::optional<string> v_2 = none;
 		Value::ConstMemberIterator itr_2 = params.GetObject().FindMember(PasswordController_k__obtainedPasswordString);
 		if (itr_2 != params.GetObject().MemberEnd()) {
 			v_2 = string(itr_2->value.GetString(), itr_2->value.GetStringLength());
 		}
 		//
-		optional<Passwords::Type> v_3 = none;
+		boost::optional<Passwords::Type> v_3 = none;
 		Value::ConstMemberIterator itr_3 = params.GetObject().FindMember(PasswordController_k__userSelectedTypeOfPassword);
 		if (itr_3 != params.GetObject().MemberEnd()) {
 			v_3 = Passwords::new_Type_with_bridge_serialized(itr_3->value.GetUint());
@@ -272,7 +272,7 @@ std::shared_ptr<HTTPRequests::Handle> Bridge::new_request(
 	string authority, // host+':'+port
 	string endpoint_path,
 	ReqParams params,
-	std::function<void(optional<string> err_str, std::shared_ptr<ResponseJSON> res)> fn
+	std::function<void(boost::optional<string> err_str, std::shared_ptr<ResponseJSON> res)> fn
 ) {
 	vector<string> authority_components;
 	string str = authority; // an undesired copy

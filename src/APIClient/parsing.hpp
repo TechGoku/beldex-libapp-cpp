@@ -228,26 +228,26 @@ namespace HostedMonero
 		uint64_t totalSent;
 		uint64_t totalReceived;
 		double approxFloatAmount;
-		optional<std::vector<SpentOutputDescription>> spent_outputs;
+		boost::optional<std::vector<SpentOutputDescription>> spent_outputs;
 		time_t timestamp;
 		string hash;
-		optional<string> paymentId; // this is made mutable so it can be recovered if saved only locally
-		optional<size_t> mixin; // this is made mutable so it can be recovered if saved only locally
+		boost::optional<string> paymentId; // this is made mutable so it can be recovered if saved only locally
+		boost::optional<size_t> mixin; // this is made mutable so it can be recovered if saved only locally
 		//
 		bool mempool;
 		double unlock_time;
-		optional<uint64_t> height; // may not have made it into a block yet!
+		boost::optional<uint64_t> height; // may not have made it into a block yet!
 		//
 		// Transient values
 		bool cached__isConfirmed;
 		bool cached__isUnlocked;
-//		optional<string> cached__lockedReason; // only calculated if isUnlocked=true
+//		boost::optional<string> cached__lockedReason; // only calculated if isUnlocked=true
 		//
 		bool isJustSentTransientTransactionRecord; // allowed to be mutable for modification during tx cleanup
-		optional<string> tx_key;
-		optional<uint64_t> tx_fee;
-		optional<string> to_address;
-		optional<bool> isFailed; // set to mutable to allow changing in-place
+		boost::optional<string> tx_key;
+		boost::optional<uint64_t> tx_fee;
+		boost::optional<string> to_address;
+		boost::optional<bool> isFailed; // set to mutable to allow changing in-place
 		//
 		// Lifecycle - Deinit
 //		deinit
@@ -259,7 +259,7 @@ namespace HostedMonero
 		//
 		// Static - Accessors - Transforms
 		static bool isConfirmed(
-			optional<uint64_t> height,
+			boost::optional<uint64_t> height,
 			uint64_t blockchain_height
 		) {
 			if (height == none) {
@@ -384,7 +384,7 @@ namespace HostedMonero
 		) {
 			assert(dict.IsObject());
 			//
-			optional<uint64_t> height = none;
+			boost::optional<uint64_t> height = none;
 			{
 				Value::ConstMemberIterator itr = dict.FindMember("height");
 				if (itr != dict.MemberEnd()) {
@@ -392,7 +392,7 @@ namespace HostedMonero
 				}
 			}
 			double unlock_time = dict["unlock_time"].GetDouble();
-			optional<bool> optl__isFailed = none;
+			boost::optional<bool> optl__isFailed = none;
 			{
 				Value::ConstMemberIterator itr = dict.FindMember("isFailed");
 				if (itr != dict.MemberEnd()) {
@@ -406,28 +406,28 @@ namespace HostedMonero
 			//																								 givenTransactionUnlockTime: unlockTime,
 			//																								 andWalletBlockchainHeight: wallet__blockchainHeight
 			//																								 ) : nil
-			optional<uint64_t> optl__tx_fee = none;
+			boost::optional<uint64_t> optl__tx_fee = none;
 			{
 				Value::ConstMemberIterator itr = dict.FindMember("tx_fee");
 				if (itr != dict.MemberEnd()) {
 					optl__tx_fee = stoull(itr->value.GetString());
 				}
 			}
-			optional<string> optl__paymentId = none;
+			boost::optional<string> optl__paymentId = none;
 			{
 				Value::ConstMemberIterator itr = dict.FindMember("paymentId");
 				if (itr != dict.MemberEnd()) {
 					optl__paymentId = string(itr->value.GetString(), itr->value.GetStringLength());
 				}
 			}
-			optional<string> optl__tx_key = none;
+			boost::optional<string> optl__tx_key = none;
 			{
 				Value::ConstMemberIterator itr = dict.FindMember("tx_key");
 				if (itr != dict.MemberEnd()) {
 					optl__tx_key = string(itr->value.GetString(), itr->value.GetStringLength());
 				}
 			}
-			optional<string> optl__to_address = none;
+			boost::optional<string> optl__to_address = none;
 			{
 				Value::ConstMemberIterator itr = dict.FindMember("to_address");
 				if (itr != dict.MemberEnd()) {
@@ -666,20 +666,20 @@ namespace HostedMonero
 	struct ParsedResult_Login
 	{
 		bool isANewAddressToServer;
-		optional<bool> generated_locally; // may be nil if the server doesn't support it yet (pre summer 18)
-		optional<uint64_t> start_height; // may be nil if the server doesn't support it yet (pre summer 18)
+		boost::optional<bool> generated_locally; // may be nil if the server doesn't support it yet (pre summer 18)
+		boost::optional<uint64_t> start_height; // may be nil if the server doesn't support it yet (pre summer 18)
 	};
 	static inline ParsedResult_Login new_ParsedResult_Login(
 		const HTTPRequests::ResponseJSON &res
 	) {
-		optional<bool> generated_locally = none;
+		boost::optional<bool> generated_locally = none;
 		{
 			Value::ConstMemberIterator itr = res.FindMember("generated_locally");
 			if (itr != res.MemberEnd()) {
 				generated_locally = itr->value.GetBool();
 			}
 		}
-		optional<uint64_t> start_height = none;
+		boost::optional<uint64_t> start_height = none;
 		{
 			Value::ConstMemberIterator itr = res.FindMember("start_height");
 			if (itr != res.MemberEnd()) {
@@ -859,7 +859,7 @@ namespace HostedMonero
 					continue; // skip
 				}
 				int64_t final_tx_amount = final_tx_totalReceived - final_tx_totalSent; // must be allowed to go negative
-				optional<uint64_t> height = none;
+				boost::optional<uint64_t> height = none;
 				{
 					Value::ConstMemberIterator itr = tx_dict.FindMember("height");
 					if (itr != tx_dict.MemberEnd()) {
@@ -876,14 +876,14 @@ namespace HostedMonero
 				//
 				bool isConfirmed = HistoricalTxRecord::isConfirmed(height, blockchain_height);
 				bool isUnlocked = HistoricalTxRecord::isUnlocked(unlockTime, blockchain_height);
-//				optional<string> lockedReason = !isUnlocked ? HistoricalTxRecord::lockedReason(
+//				boost::optional<string> lockedReason = !isUnlocked ? HistoricalTxRecord::lockedReason(
 //					givenTransactionUnlockTime: unlockTime,
 //					andWalletBlockchainHeight: blockchain_height
 //				) : nil
 				//
 				double approxFloatAmount = Currencies::doubleFrom(final_tx_amount);
 				//
-				optional<string> final__paymentId = none;
+				boost::optional<string> final__paymentId = none;
 				{
 					Value::ConstMemberIterator itr = tx_dict.FindMember("payment_id");
 					if (itr != tx_dict.MemberEnd()) {
@@ -897,7 +897,7 @@ namespace HostedMonero
 						final__paymentId = none; // need to filter these out .. because (afaik) after adding short pid scanning support, the server can't presently filter out short (encrypted) pids on outgoing txs ... not sure this is the optimal or 100% correct solution
 					}
 				}
-				optional<size_t> mixin = none;
+				boost::optional<size_t> mixin = none;
 				{
 					Value::ConstMemberIterator itr = tx_dict.FindMember("mixin");
 					if (itr != tx_dict.MemberEnd()) {
@@ -956,7 +956,7 @@ namespace HostedMonero
 		string payment_id;
 		string payment_address;
 		uint64_t import_fee;
-		optional<string> feeReceiptStatus;
+		boost::optional<string> feeReceiptStatus;
 	};
 }
 #endif /* parsing_hpp */

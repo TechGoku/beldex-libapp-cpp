@@ -101,9 +101,9 @@ namespace Wallets
 		std::shared_ptr<HTTPRequests::Handle> _requestHandleFor_addressInfo;
 		std::shared_ptr<HTTPRequests::Handle> _requestHandleFor_addressTransactions;
 		//
-		optional<time_t> _dateOfLast_fetch_addressInfo;
-		optional<time_t> _dateOfLast_fetch_addressTransactions;
-		optional<bool> _lastRecorded_isFetchingAnyUpdates;
+		boost::optional<time_t> _dateOfLast_fetch_addressInfo;
+		boost::optional<time_t> _dateOfLast_fetch_addressTransactions;
+		boost::optional<bool> _lastRecorded_isFetchingAnyUpdates;
 		//
 		// Imperatives - Lifecycle
 		void tearDown();

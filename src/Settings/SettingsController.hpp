@@ -77,10 +77,10 @@ namespace Settings
 	//
 	// Accessory types
 	typedef boost::variant<
-		optional<double>,
+		boost::optional<double>,
 		bool,
-		optional<Currencies::CurrencySymbol>,
-		optional<string>
+		boost::optional<Currencies::CurrencySymbol>,
+		boost::optional<string>
 	> prop_val_arg_type;
 	//
 	// Controllers
@@ -128,15 +128,15 @@ namespace Settings
 			return uuid_string;
 		}
 		// Protocols - DeleteEverythingRegistrant
-		optional<string> passwordController_DeleteEverything();
+		boost::optional<string> passwordController_DeleteEverything();
 		// Protocols - ChangePasswordRegistrant
-		optional<Passwords::EnterPW_Fn_ValidationErr_Code> passwordController_ChangePassword();
+		boost::optional<Passwords::EnterPW_Fn_ValidationErr_Code> passwordController_ChangePassword();
 		//
 		// Accessors - IdleTimeoutAfterS_SettingsProvider
 		double default_appTimeoutAfterS();
-		optional<double> appTimeoutAfterS_noneForDefault_orNeverValue();
+		boost::optional<double> appTimeoutAfterS_noneForDefault_orNeverValue();
 		// Accessors - Other properties - Synchronized
-		optional<string> specificAPIAddressURLAuthority();
+		boost::optional<string> specificAPIAddressURLAuthority();
 		bool authentication__requireWhenSending();
 		bool authentication__requireToShowWalletSecrets();
 		bool authentication__tryBiometric();
@@ -144,12 +144,12 @@ namespace Settings
 		Currencies::Currency displayCurrency();
 		//
 		// Imperatives
-		bool set_appTimeoutAfterS_noneForDefault_orNeverValue(optional<double> value);
+		bool set_appTimeoutAfterS_noneForDefault_orNeverValue(boost::optional<double> value);
 		bool set_authentication__requireWhenSending(bool value);
 		bool set_authentication__requireToShowWalletSecrets(bool value);
 		bool set_authentication__tryBiometric(bool value);
-		bool set_displayCurrencySymbol(optional<Currencies::CurrencySymbol> value);
-		bool set_specificAPIAddressURLAuthority(optional<string> value);
+		bool set_displayCurrencySymbol(boost::optional<Currencies::CurrencySymbol> value);
+		bool set_specificAPIAddressURLAuthority(boost::optional<string> value);
 	private:
 		//
 		// Properties - Runtime
@@ -157,16 +157,16 @@ namespace Settings
 		std::mutex property_mutex;
 		bool _hasBooted = false;
 		// Properties - Saved values
-		optional<DocumentId> _id = none;
-		optional<double> _appTimeoutAfterS_noneForDefault_orNeverValue;
-		optional<string> _specificAPIAddressURLAuthority;
+		boost::optional<DocumentId> _id = none;
+		boost::optional<double> _appTimeoutAfterS_noneForDefault_orNeverValue;
+		boost::optional<string> _specificAPIAddressURLAuthority;
 		bool _authentication__requireWhenSending;
 		bool _authentication__requireToShowWalletSecrets;
 		bool _authentication__tryBiometric;
 		Currencies::CurrencySymbol _displayCurrencySymbol;
 		//
 		// Accessors
-		optional<string> _givenLocked_existing_saved_documentContentString() const;
+		boost::optional<string> _givenLocked_existing_saved_documentContentString() const;
 		bool shouldInsertNotUpdate() const;
 		document_persister::DocumentJSON _givenLocked_new_dictRepresentation() const;
 		//
@@ -183,9 +183,9 @@ namespace Settings
 		void _onAsync_invokeEmitterFor_changed__all();
 		void _givenLocked_initWithDefaults();
 		void _givenLocked_setup_loadState(
-			optional<DocumentId> arg_id,
-			optional<string> specificAPIAddressURLAuthority,
-			optional<double> appTimeoutAfterS_noneForDefault_orNeverValue,
+			boost::optional<DocumentId> arg_id,
+			boost::optional<string> specificAPIAddressURLAuthority,
+			boost::optional<double> appTimeoutAfterS_noneForDefault_orNeverValue,
 			bool authentication__requireWhenSending,
 			bool authentication__requireToShowWalletSecrets,
 			bool authentication__tryBiometric,

@@ -129,13 +129,13 @@ namespace Wallets
 		// Imperatives
 		virtual void CreateNewWallet_NoBootNoListAdd( // call this first, then call OnceBooted_ObtainPW_AddNewlyGeneratedWallet_externallyTmpRetained
 			string localeCode,
-			std::function<void(optional<string> err, std::shared_ptr<Wallets::Object> walletInstance)> fn
+			std::function<void(boost::optional<string> err, std::shared_ptr<Wallets::Object> walletInstance)> fn
 		); // overridable but callable on super
 		virtual void OnceBooted_ObtainPW_AddNewlyGeneratedWallet_externallyTmpRetained(
 			std::shared_ptr<Wallets::Object> walletInstance,
 			string walletLabel,
 			Wallets::SwatchColor swatchColor,
-			std::function<void(optional<string> err_str, std::shared_ptr<Wallets::Object> walletInstance)>&& fn,
+			std::function<void(boost::optional<string> err_str, std::shared_ptr<Wallets::Object> walletInstance)>&& fn,
 			std::function<void()>&& userCanceledPasswordEntry_fn = {}
 		); // overridable but callable on super
 		virtual void OnceBooted_ObtainPW_AddExtantWalletWith_MnemonicString(
@@ -143,9 +143,9 @@ namespace Wallets
 			Wallets::SwatchColor swatchColor,
 			string mnemonicString,
 			std::function<void(
-				optional<string> err_str,
+				boost::optional<string> err_str,
 				std::shared_ptr<Wallets::Object> walletInstance,
-				optional<bool> wasWalletAlreadyInserted
+				boost::optional<bool> wasWalletAlreadyInserted
 			)> fn,
 			std::function<void()> userCanceledPasswordEntry_fn = {} // default
 		); // overridable but callable on super
@@ -156,9 +156,9 @@ namespace Wallets
 			string sec_view_key,
 			string sec_spend_key,
 			std::function<void(
-				optional<string> err_str,
+				boost::optional<string> err_str,
 				std::shared_ptr<Wallets::Object> walletInstance,
-				optional<bool> wasWalletAlreadyInserted
+				boost::optional<bool> wasWalletAlreadyInserted
 			)> fn,
 			std::function<void()> userCanceledPasswordEntry_fn = {}
 		); // overridable but callable on super
@@ -169,7 +169,7 @@ namespace Wallets
 		) override {
 			auto wallet = std::dynamic_pointer_cast<Wallets::Object>(listedObjectInstance);
 			if (wallet->isLoggedIn()) {
-				wallet->Boot_havingLoadedDecryptedExistingInitDoc([] (optional<string> err_str)
+				wallet->Boot_havingLoadedDecryptedExistingInitDoc([] (boost::optional<string> err_str)
 				{
 					if (err_str != none) {
 						MERROR("Wallets: Error while booting wallet: " << *err_str);

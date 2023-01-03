@@ -239,7 +239,7 @@ namespace Wallets
 		Object(
 			std::shared_ptr<std::string> documentsPath,
 			std::shared_ptr<const Passwords::PasswordProvider> passwordProvider,
-			optional<monero_wallet_utils::WalletDescription> ifGeneratingNewWallet_walletDescription,
+			boost::optional<monero_wallet_utils::WalletDescription> ifGeneratingNewWallet_walletDescription,
 			const cryptonote::network_type nettype,
 			std::shared_ptr<HostedMonero::APIClient> apiClient,
 			std::shared_ptr<Dispatch::Dispatch> dispatch_ptr,
@@ -707,7 +707,7 @@ namespace Wallets
 		string walletLabel() { return _walletLabel; }
 		SwatchColor swatchColor() { return _swatchColor; }
 		bool isLoggedIn() { return _isLoggedIn; }
-		optional<string> mnemonicString() { return _mnemonicString; } // TODO: is this the correct way to return an optional?
+		boost::optional<string> mnemonicString() { return _mnemonicString; } // TODO: is this the correct way to return an boost::optional?
 		string public_address() { return _public_address; }
 		string view_sec_key() { return _view_sec_key; }
 		string spend_sec_key() { return _spend_sec_key; }
@@ -718,7 +718,7 @@ namespace Wallets
 			}
 			return _keyImageCache;
 		}
-		optional<std::vector<HostedMonero::HistoricalTxRecord>> actual_noLock_transactions()
+		boost::optional<std::vector<HostedMonero::HistoricalTxRecord>> actual_noLock_transactions()
 		{
 			return _transactions;
 		}
@@ -852,19 +852,19 @@ namespace Wallets
 		//
 		// Imperatives
 		void Boot_havingLoadedDecryptedExistingInitDoc(
-			std::function<void(optional<string> err_str)> fn
+			std::function<void(boost::optional<string> err_str)> fn
 		);
 		void Boot_byLoggingIn_givenNewlyCreatedWallet(
 			const string &walletLabel,
 			Wallets::SwatchColor swatchColor,
-			std::function<void(optional<string> err_str)> fn
+			std::function<void(boost::optional<string> err_str)> fn
 		);
 		void Boot_byLoggingIn_existingWallet_withMnemonic(
 			const string &walletLabel,
 			SwatchColor swatchColor,
 			const string &mnemonic_string,
 			bool persistEvenIfLoginFailed_forServerChange,
-			std::function<void(optional<string> err_str)> fn
+			std::function<void(boost::optional<string> err_str)> fn
 		);
 		void Boot_byLoggingIn_existingWallet_withAddressAndKeys(
 			const string &walletLabel,
@@ -873,13 +873,13 @@ namespace Wallets
 			const string &sec_viewKey_string,
 			const string &sec_spendKey_string,
 			bool persistEvenIfLoginFailed_forServerChange,
-			std::function<void(optional<string> err_str)> fn
+			std::function<void(boost::optional<string> err_str)> fn
 		);
 		void logOutThenSaveAndLogIn();
 		//
 		void requestManualUserRefresh();
 		//
-		optional<string/*err_str*/> SetValuesAndSave(
+		boost::optional<string/*err_str*/> SetValuesAndSave(
 			string walletLabel,
 			SwatchColor swatchColor
 		);
@@ -898,9 +898,9 @@ namespace Wallets
 		void deBoot();
 		//
 		// Properties
-		optional<bool> _local_wasAGeneratedWallet;
-		optional<bool> _login__new_address;
-		optional<bool> _login__generated_locally;
+		boost::optional<bool> _local_wasAGeneratedWallet;
+		boost::optional<bool> _login__new_address;
+		boost::optional<bool> _login__generated_locally;
 		//
 		cryptonote::network_type _nettype;
 		std::shared_ptr<HostedMonero::APIClient> _apiClient;
@@ -914,43 +914,43 @@ namespace Wallets
 		string _walletLabel;
 		SwatchColor _swatchColor;
 		//
-		optional<string> _mnemonicString;
-		optional<string> _mnemonic_wordsetName;
-		optional<monero_wallet_utils::WalletDescription> _generatedOnInit_walletDescription;
+		boost::optional<string> _mnemonicString;
+		boost::optional<string> _mnemonic_wordsetName;
+		boost::optional<monero_wallet_utils::WalletDescription> _generatedOnInit_walletDescription;
 
-		optional<string> _account_seed;
+		boost::optional<string> _account_seed;
 		string _view_sec_key;
 		string _spend_sec_key;
 		string _view_pub_key;
 		string _spend_pub_key;
 		string _public_address;
 		//
-		optional<uint64_t> _totalReceived;
-		optional<uint64_t> _totalSent;
-		optional<uint64_t> _lockedBalance;
+		boost::optional<uint64_t> _totalReceived;
+		boost::optional<uint64_t> _totalSent;
+		boost::optional<uint64_t> _lockedBalance;
 		//
-		optional<uint64_t> _account_scanned_tx_height;
-		optional<uint64_t> _account_scanned_height; // TODO: it would be good to resolve account_scanned_height vs account_scanned_tx_height
-		optional<uint64_t> _account_scanned_block_height;
-		optional<uint64_t> _account_scan_start_height;
-		optional<uint64_t> _transaction_height;
-		optional<uint64_t> _blockchain_height;
+		boost::optional<uint64_t> _account_scanned_tx_height;
+		boost::optional<uint64_t> _account_scanned_height; // TODO: it would be good to resolve account_scanned_height vs account_scanned_tx_height
+		boost::optional<uint64_t> _account_scanned_block_height;
+		boost::optional<uint64_t> _account_scan_start_height;
+		boost::optional<uint64_t> _transaction_height;
+		boost::optional<uint64_t> _blockchain_height;
 		//
-		optional<std::vector<HostedMonero::SpentOutputDescription>> _spentOutputs;
-		optional<std::vector<HostedMonero::HistoricalTxRecord>> _transactions;
+		boost::optional<std::vector<HostedMonero::SpentOutputDescription>> _spentOutputs;
+		boost::optional<std::vector<HostedMonero::HistoricalTxRecord>> _transactions;
 		//
-		optional<time_t> _dateThatLast_fetchedAccountInfo;
-		optional<time_t> _dateThatLast_fetchedAccountTransactions;
+		boost::optional<time_t> _dateThatLast_fetchedAccountInfo;
+		boost::optional<time_t> _dateThatLast_fetchedAccountTransactions;
 		//
 		// Properties - Boolean State
 		// persisted
 		bool _isLoggedIn = false;
-		optional<bool> _isInViewOnlyMode;
+		boost::optional<bool> _isInViewOnlyMode;
 		// transient/not persisted
 		bool _isBooted = false;
-		optional<bool> _shouldDisplayImportAccountOption;
+		boost::optional<bool> _shouldDisplayImportAccountOption;
 		bool _isLoggingIn = false;
-		optional<bool> _wasInitializedWith_addrViewAndSpendKeysInsteadOfSeed;
+		boost::optional<bool> _wasInitializedWith_addrViewAndSpendKeysInsteadOfSeed;
 		bool _isSendingFunds = false;
 		//
 		// Properties - Objects
@@ -963,16 +963,16 @@ namespace Wallets
 		// Accessors
 		//
 		// Imperatives
-		void _setStateThatFailedToBoot(optional<string> err_str);
+		void _setStateThatFailedToBoot(boost::optional<string> err_str);
 		void __trampolineFor_failedToBootWith_fnAndErrStr(
-			std::function<void(optional<string> err_str)>&& fn,
-			optional<string> err_str
+			std::function<void(boost::optional<string> err_str)>&& fn,
+			boost::optional<string> err_str
 		);
 		void _trampolineFor_successfullyBooted(
-			std::function<void(optional<string> err_str)>&& fn
+			std::function<void(boost::optional<string> err_str)>&& fn
 		);
 		void ___proceed_havingActuallyBooted__trampolineFor_successfullyBooted(
-			std::function<void(optional<string> err_str)>&& fn
+			std::function<void(boost::optional<string> err_str)>&& fn
 		);
 		void _atRuntime_setup_hostPollingController();
 		void _atRuntime_setup_txCleanupController();
@@ -980,10 +980,10 @@ namespace Wallets
 			const string &address,
 			const string &sec_viewKey_string,
 			const string &sec_spendKey_string,
-			optional<string> seed_orNone,
+			boost::optional<string> seed_orNone,
 			bool wasAGeneratedWallet,
 			bool persistEvenIfLoginFailed_forServerChange,
-			std::function<void(optional<string> err_str)> fn
+			std::function<void(boost::optional<string> err_str)> fn
 		);
 		void _manuallyInsertTransactionRecord(
 			const HostedMonero::HistoricalTxRecord &transaction

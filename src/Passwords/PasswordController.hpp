@@ -140,7 +140,7 @@ namespace Passwords
 		virtual void getUserToEnterExistingPassword(
 			bool isForChangePassword,
 			bool isForAuthorizingAppActionOnly, // normally no - this is for things like SendFunds
-			optional<string> customNavigationBarTitle
+			boost::optional<string> customNavigationBarTitle
 		) = 0;
 		// then call Controller::enterExistingPassword_cb
 		//
@@ -181,13 +181,13 @@ namespace Passwords
 	class ChangePasswordRegistrant: public PasswordControllerEventParticipant
 	{ // Implement this function to support change-password events as well as revert-from-failed-change-password
 	public:
-		virtual optional<EnterPW_Fn_ValidationErr_Code> passwordController_ChangePassword() = 0; // return err_str:String if error - it will abort and try to revert the changepassword process. at time of writing, this was able to be kept synchronous.
+		virtual boost::optional<EnterPW_Fn_ValidationErr_Code> passwordController_ChangePassword() = 0; // return err_str:String if error - it will abort and try to revert the changepassword process. at time of writing, this was able to be kept synchronous.
 		// TODO: ^-- maybe make this return a code instead of an error string
 	};
 	class DeleteEverythingRegistrant: public PasswordControllerEventParticipant
 	{
 	public:
-		virtual optional<string> passwordController_DeleteEverything() = 0; // return err_str:String if error. at time of writing, this was able to be kept synchronous.
+		virtual boost::optional<string> passwordController_DeleteEverything() = 0; // return err_str:String if error. at time of writing, this was able to be kept synchronous.
 		// TODO: ^-- maybe make this return a code instead of an error string
 	};
 }
@@ -291,7 +291,7 @@ namespace Passwords
 		boost::signals2::signal<void()> havingDeletedEverything_didDeconstructBootedStateAndClearPassword_signal;
 		//
 		// Accessors - Interfaces - PasswordProvider
-		optional<Password> getPassword() const;
+		boost::optional<Password> getPassword() const;
 		// Accessors - Members
 		Passwords::Type getPasswordType() const;
 		// Accessors - Persistence state
@@ -340,7 +340,7 @@ namespace Passwords
 		//
 		void initiate_verifyUserAuthenticationForAction(
 			bool tryBiometrics,
-			optional<string> customNavigationBarTitle_orNone,
+			boost::optional<string> customNavigationBarTitle_orNone,
 			std::function<void()> canceled_fn,
 			std::function<void()> entryAttempt_succeeded_fn // required
 		);
@@ -353,41 +353,41 @@ namespace Passwords
 		//
 		// Properties - Instance members
 		bool hasBooted = false;
-		optional<DocumentId> _id = none;
-		optional<Password> _password = none;
+		boost::optional<DocumentId> _id = none;
+		boost::optional<Password> _password = none;
 		Passwords::Type _passwordType;
 		boost::optional<string> _messageAsEncryptedDataForUnlockChallenge_base64String = none;
 		boost::optional<bool> _isAlreadyGettingExistingOrNewPWFromUser = none;
 		//
 		bool _preexistingBeforeSetNew_wasFirstSetOfPasswordAtRuntime;
-		optional<Password> _preexistingBeforeSetNew_password = none;
+		boost::optional<Password> _preexistingBeforeSetNew_password = none;
 		Passwords::Type _preexistingBeforeSetNew_passwordType;
 		bool _preexistingBeforeSetNew_isForChangePassword;
 		//
 		std::unordered_map<string, std::shared_ptr<once_booted_callback_info_container>> once_booted_callback_info_containers_by_uuid;
 		//
 		void _callAndFlushAllBlocksWaitingForBootToExecute();
-		optional<vector<std::function<void()>>> __blocksWaitingForBootToExecute = none;
+		boost::optional<vector<std::function<void()>>> __blocksWaitingForBootToExecute = none;
 		// NOTE: onceBooted() exists because even though init()->setup() is synchronous, we need to be able to tear down and reconstruct the passwordController booted state, e.g. on user idle and delete everything
 		//
 		Passwords::PasswordEntryDelegate *_passwordEntryDelegate = nullptr; // someone in the app must set this by calling setPasswordEntryDelegate()
 		//
 		bool isWaitingFor_enterExistingPassword_cb = false;
-		optional<std::function<void(
-			optional<bool> didCancel_orNone,
-			optional<EnterPW_Fn_ValidationErr_Code> validationErr_orNone,
-			optional<Password> obtainedPasswordString
+		boost::optional<std::function<void(
+			boost::optional<bool> didCancel_orNone,
+			boost::optional<EnterPW_Fn_ValidationErr_Code> validationErr_orNone,
+			boost::optional<Password> obtainedPasswordString
 		)>> enterExistingPassword_final_fn = none;
 		bool _isCurrentlyLockedOutFromPWEntryAttempts = false;
 		size_t _numberOfTriesDuringThisTimePeriod = 0;
-		optional<time_t> _dateOf_firstPWTryDuringThisTimePeriod;
+		boost::optional<time_t> _dateOf_firstPWTryDuringThisTimePeriod;
 		std::unique_ptr<Dispatch::CancelableTimerHandle> _pw_entry_unlock_timer_handle; // initialized to nullptr
 		bool isWaitingFor_enterNewPassword_cb = false;
 		//
 		// Authentication
-		optional<string> _waitingForAuth_customNavigationBarTitle_orNone;
-		optional<std::function<void()>> _waitingForAuth_canceled_fn;
-		optional<std::function<void()>> _waitingForAuth_entryAttempt_succeeded_fn;
+		boost::optional<string> _waitingForAuth_customNavigationBarTitle_orNone;
+		boost::optional<std::function<void()>> _waitingForAuth_canceled_fn;
+		boost::optional<std::function<void()>> _waitingForAuth_entryAttempt_succeeded_fn;
 		void _proceedTo_authenticateVia_passphrase();
 		void _authentication__callBackWithEntryAttempt_succeeded();
 		void _authentication__callBackWithEntryAttempt_canceled();
@@ -401,7 +401,7 @@ namespace Passwords
 		void initializeRuntimeAndBoot();
 		void _proceedTo_load(const DocumentJSON &documentJSON);
 		// Imperatives - Persistence
-		optional<string>/*err_str*/ saveToDisk();
+		boost::optional<string>/*err_str*/ saveToDisk();
 		//
 		void givenBooted_initiateGetNewOrExistingPasswordFromUserAndEmitIt();
 		//
@@ -409,11 +409,11 @@ namespace Passwords
 		void _getUserToEnterTheirExistingPassword(
 			bool isForChangePassword,
 			bool isForAuthorizingAppActionOnly,
-			optional<string> customNavigationBarTitle,
+			boost::optional<string> customNavigationBarTitle,
 			std::function<void(
-				optional<bool> didCancel_orNone,
-				optional<EnterPW_Fn_ValidationErr_Code> validationErr_orNone,
-				optional<Password> obtainedPasswordString
+				boost::optional<bool> didCancel_orNone,
+				boost::optional<EnterPW_Fn_ValidationErr_Code> validationErr_orNone,
+				boost::optional<Password> obtainedPasswordString
 			)> fn
 		);
 		void __cancelAnyAndRebuildUnlockTimer();
@@ -421,13 +421,13 @@ namespace Passwords
 		void obtainNewPasswordFromUser(bool isForChangePassword);
 		//
 		std::vector<ChangePasswordRegistrant *> ptrsTo_changePasswordRegistrants;
-		optional<EnterPW_Fn_ValidationErr_Code> _changePassword_tellRegistrants_doChangePassword();
+		boost::optional<EnterPW_Fn_ValidationErr_Code> _changePassword_tellRegistrants_doChangePassword();
 		//
 		std::vector<DeleteEverythingRegistrant *> ptrsTo_deleteEverythingRegistrants;
 		void _deconstructBootedStateAndClearPassword(
 			bool isForADeleteEverything,
-			std::function<void(std::function<void(optional<string> err_str)> cb)> optl__hasFiredWill_fn,
-			std::function<void(optional<string> err_str)> optl__fn
+			std::function<void(std::function<void(boost::optional<string> err_str)> cb)> optl__hasFiredWill_fn,
+			std::function<void(boost::optional<string> err_str)> optl__fn
 		);
 		//
 		// Delegation - State

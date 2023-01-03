@@ -97,7 +97,7 @@ namespace Lists
 		virtual std::shared_ptr<Lists::Controller> get_shared_ptr_from_this() = 0; // Child classes must override and implement this with shared_from_this() and by inheriting std::enabled_shared_from_this<Child>
 		//
 		virtual void overridable_deferBootUntil( // overridable
-			std::function<void(optional<string> err_str)> fn
+			std::function<void(boost::optional<string> err_str)> fn
 		) {
 			fn(boost::none); // make sure to call this
 		}
@@ -145,8 +145,8 @@ namespace Lists
 		void onceBooted(std::function<void()> fn);
 		//
 		// Imperatives - CRUD
-		optional<string> givenBooted_delete(Persistable::Object &object);
-		optional<string> givenBooted_delete_noListUpdatedNotify(Persistable::Object &object);
+		boost::optional<string> givenBooted_delete(Persistable::Object &object);
+		boost::optional<string> givenBooted_delete_noListUpdatedNotify(Persistable::Object &object);
 		//
 		// Imperatives - Overridable
 		virtual void overridable_finalizeAndSortRecords() {}
@@ -195,16 +195,16 @@ namespace Lists
 		//
 		// Execution deferment
 		void _callAndFlushAllBlocksWaitingForBootToExecute();
-		optional<vector<std::function<void()>>> __blocksWaitingForBootToExecute = none;
+		boost::optional<vector<std::function<void()>>> __blocksWaitingForBootToExecute = none;
 		//
 		// CRUD
 		void _removeFromList(Persistable::Object &object);
 		void _removeFromList_noListUpdatedNotify(Persistable::Object &object);
 		//
 		// Protocols - DeleteEverythingRegistrant
-		optional<string> passwordController_DeleteEverything();
+		boost::optional<string> passwordController_DeleteEverything();
 		// Protocols - ChangePasswordRegistrant
-		optional<Passwords::EnterPW_Fn_ValidationErr_Code> passwordController_ChangePassword();
+		boost::optional<Passwords::EnterPW_Fn_ValidationErr_Code> passwordController_ChangePassword();
 		//
 		// Delegation - Notifications
 		void PasswordController_willDeconstructBootedStateAndClearPassword();

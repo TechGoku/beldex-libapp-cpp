@@ -159,7 +159,7 @@ void Controller::__givenLocked_create_repeating_timer()
 // Imperatives - Publicly callable
 void Controller::checkIdleTimeout()
 {
-	optional<double> appTimeoutAfterS_orNone_orNeverValue = idleTimeoutAfterS_SettingsProvider->appTimeoutAfterS_noneForDefault_orNeverValue();
+	boost::optional<double> appTimeoutAfterS_orNone_orNeverValue = idleTimeoutAfterS_SettingsProvider->appTimeoutAfterS_noneForDefault_orNeverValue();
 	double appTimeoutAfterS_orNeverValue = appTimeoutAfterS_orNone_orNeverValue != none ? *appTimeoutAfterS_orNone_orNeverValue : idleTimeoutAfterS_SettingsProvider->default_appTimeoutAfterS(); // use default on no pw entered / no settings info yet
 	if (appTimeoutAfterS_orNeverValue == Settings::appTimeoutAfterS_neverValue) { // then idle timer is specifically disabled
 		return; // do nothing

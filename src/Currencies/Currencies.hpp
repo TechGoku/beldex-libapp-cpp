@@ -384,7 +384,7 @@ namespace Currencies
 			//
 			return it != xmrToCurrencyRatesByCurrencyUID.end();
 		}
-		optional<CcyConversion_Rate> rateFromXMR_orNoneIfNotReady(Currency toCurrency) const
+		boost::optional<CcyConversion_Rate> rateFromXMR_orNoneIfNotReady(Currency toCurrency) const
 		{
 			if (toCurrency == Currency::none || toCurrency == Currency::XMR) {
 				BOOST_THROW_EXCEPTION(logic_error("Invalid 'currency' argument value"));
@@ -521,7 +521,7 @@ namespace Currencies
 	}
 	//
 	//
-	inline optional<double> displayUnitsRounded_amountInCurrency( // NOTE: __DISPLAY_ units
+	inline boost::optional<double> displayUnitsRounded_amountInCurrency( // NOTE: __DISPLAY_ units
 		TwelveDecimalMoneyAmount moneroAmount,
 		Currency inCcy,
 		const ConversionRatesController &controller
@@ -534,7 +534,7 @@ namespace Currencies
 		if (inCcy == Currencies::XMR) {
 			return moneroAmountDouble; // no conversion necessary
 		}
-		optional<double> xmrToCurrencyRate = controller.rateFromXMR_orNoneIfNotReady(inCcy);
+		boost::optional<double> xmrToCurrencyRate = controller.rateFromXMR_orNoneIfNotReady(inCcy);
 		if (xmrToCurrencyRate == boost::none) {
 			return none; // ccyConversion rate unavailable - consumers will try again
 		}
@@ -546,7 +546,7 @@ namespace Currencies
 	}
 	//
 	static int ccyConversionRateCalculated_moneroAmountDouble_roundingPlaces = 4; // 4 rather than, say, 2, b/c it's relatively more unlikely that fiat amts will be over 10-100 xmr - and b/c some currencies require it for xmr value not to be 0 - and 5 places is a bit excessive
-	inline optional<double> rounded_ccyConversionRateCalculated_moneroAmountDouble(
+	inline boost::optional<double> rounded_ccyConversionRateCalculated_moneroAmountDouble(
 		double userInputAmountDouble,
 		Currency selectedCurrency,
 		const ConversionRatesController &controller
@@ -555,7 +555,7 @@ namespace Currencies
 			BOOST_THROW_EXCEPTION(logic_error("Selected currency unexpectedly none"));
 			return none;
 		}
-		optional<CcyConversion_Rate> xmrToCurrencyRate = controller.rateFromXMR_orNoneIfNotReady(selectedCurrency);
+		boost::optional<CcyConversion_Rate> xmrToCurrencyRate = controller.rateFromXMR_orNoneIfNotReady(selectedCurrency);
 		if (xmrToCurrencyRate == boost::none) {
 			return none; // ccyConversion rate unavailable - consumers will try again on 'didUpdateAvailabilityOfRates'
 		}

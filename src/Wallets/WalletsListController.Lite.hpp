@@ -63,7 +63,7 @@ namespace Wallets
 		virtual void CreateNewWallet_NoBootNoListAdd(
 			string localeCode,
 			std::function<void(
-				optional<string> err,
+				boost::optional<string> err,
 				std::shared_ptr<Wallets::Object> walletInstance
 			)> fn
 		) override {
@@ -81,7 +81,7 @@ namespace Wallets
 			std::shared_ptr<Wallets::Object> walletInstance,
 			string walletLabel,
 			Wallets::SwatchColor swatchColor,
-			std::function<void(optional<string> err_str, std::shared_ptr<Wallets::Object> walletInstance)>&& fn,
+			std::function<void(boost::optional<string> err_str, std::shared_ptr<Wallets::Object> walletInstance)>&& fn,
 			std::function<void()>&& userCanceledPasswordEntry_fn = {}
 		) override {
 			if (_records.size() > 0) {
@@ -102,9 +102,9 @@ namespace Wallets
 			Wallets::SwatchColor swatchColor,
 			string mnemonicString,
 			std::function<void(
-				optional<string> err_str,
+				boost::optional<string> err_str,
 				std::shared_ptr<Wallets::Object> walletInstance,
-				optional<bool> wasWalletAlreadyInserted
+				boost::optional<bool> wasWalletAlreadyInserted
 			)> fn,
 			std::function<void()> userCanceledPasswordEntry_fn = {}
 		) override {
@@ -128,9 +128,9 @@ namespace Wallets
 			string sec_view_key,
 			string sec_spend_key,
 			std::function<void(
-				optional<string> err_str,
+				boost::optional<string> err_str,
 				std::shared_ptr<Wallets::Object> walletInstance,
-				optional<bool> wasWalletAlreadyInserted
+				boost::optional<bool> wasWalletAlreadyInserted
 			)> fn,
 			std::function<void()> userCanceledPasswordEntry_fn = {}
 		) override {

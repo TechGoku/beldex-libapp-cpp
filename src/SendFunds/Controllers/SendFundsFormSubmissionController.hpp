@@ -105,8 +105,8 @@ namespace SendFunds
 		uint64_t total_sent; // final_total_wo_fee + final_fee
 		size_t mixin;
 		bool isXMRAddressIntegrated; // regarding sentTo_address
-		optional<string> final_payment_id; // will be filled if a payment id was passed in or an integrated address was used
-		optional<string> integratedAddressPIDForDisplay;
+		boost::optional<string> final_payment_id; // will be filled if a payment id was passed in or an integrated address was used
+		boost::optional<string> integratedAddressPIDForDisplay;
 		string signed_serialized_tx_string;
 		string tx_hash_string;
 		string tx_key_string; // this includes additional_tx_keys
@@ -127,10 +127,10 @@ namespace SendFunds
 		uint32_t priority;
 		//
 		bool hasPickedAContact;
-		optional<string> contact_payment_id;
-		optional<bool> contact_hasOpenAliasAddress;
-		optional<string> cached_OAResolved_address; // this may be an XMR address or a BTC address or … etc
-		optional<string> contact_address; // instead of the OAResolved_address
+		boost::optional<string> contact_payment_id;
+		boost::optional<bool> contact_hasOpenAliasAddress;
+		boost::optional<string> cached_OAResolved_address; // this may be an XMR address or a BTC address or … etc
+		boost::optional<string> contact_address; // instead of the OAResolved_address
 		//
 		network_type nettype;
 		string from_address_string;
@@ -140,23 +140,23 @@ namespace SendFunds
 		//
 		vector<string> enteredAddressValues;
 		//
-		optional<string> resolvedAddress;
+		boost::optional<string> resolvedAddress;
 		bool resolvedAddress_fieldIsVisible;
 		//
-		optional<string> manuallyEnteredPaymentID;
+		boost::optional<string> manuallyEnteredPaymentID;
 		bool manuallyEnteredPaymentID_fieldIsVisible;
 		//
-		optional<string> resolvedPaymentID;
+		boost::optional<string> resolvedPaymentID;
 		bool resolvedPaymentID_fieldIsVisible;
 		//
 		// Process callbacks
 		std::function<void(ProcessStep step)> preSuccess_nonTerminal_validationMessageUpdate_fn;
 		std::function<void(
 			PreSuccessTerminalCode code,
-			optional<string> msg,
-			optional<CreateTransactionErrorCode> createTx_errCode,
-			optional<uint64_t> spendable_balance,
-			optional<uint64_t> required_balance
+			boost::optional<string> msg,
+			boost::optional<CreateTransactionErrorCode> createTx_errCode,
+			boost::optional<uint64_t> spendable_balance,
+			boost::optional<uint64_t> required_balance
 		)> failure_fn;
 		std::function<void(void)> preSuccess_passedValidation_willBeginSending; // use this to lock sending, pause idle timer, etc
 		//
@@ -194,9 +194,9 @@ namespace SendFunds
 		// Imperatives - Runtime
 		void handle();
 		void cb__authentication(bool did_pass/*false means canceled*/);
-		void cb_I__got_unspent_outs(optional<string> err_msg, const optional<property_tree::ptree> &res);
-		void cb_II__got_random_outs(optional<string> err_msg, const optional<property_tree::ptree> &res);
-		void cb_III__submitted_tx(optional<string> err_msg);
+		void cb_I__got_unspent_outs(boost::optional<string> err_msg, const boost::optional<property_tree::ptree> &res);
+		void cb_II__got_random_outs(boost::optional<string> err_msg, const boost::optional<property_tree::ptree> &res);
+		void cb_III__submitted_tx(boost::optional<string> err_msg);
 	private:
 		//
 		// Properties - Instance members
@@ -205,29 +205,30 @@ namespace SendFunds
 		// - from setup
 		vector<uint64_t> sending_amounts;
 		vector<string> to_address_strings;
-		optional<string> payment_id_string;
+		boost::optional<string> payment_id_string;
 		bool isXMRAddressIntegrated;
-		optional<string> integratedAddressPIDForDisplay;
+		boost::optional<string> integratedAddressPIDForDisplay;
 		// - from cb_i
 		vector<SpendableOutput> unspent_outs;
 		uint64_t fee_per_b;
+		uint64_t fee_per_o;
 		uint64_t fee_mask;
 		monero_fork_rules::use_fork_rules_fn_type use_fork_rules;
 		// - re-entry params
-		optional<uint64_t> prior_attempt_size_calcd_fee;
-		optional<SpendableOutputToRandomAmountOutputs> prior_attempt_unspent_outs_to_mix_outs;
+		boost::optional<uint64_t> prior_attempt_size_calcd_fee;
+		boost::optional<SpendableOutputToRandomAmountOutputs> prior_attempt_unspent_outs_to_mix_outs;
 		size_t constructionAttempt;
 		// - step1_retVals held for step2 - making them optl for increased safety
-		optional<uint64_t> step1_retVals__final_total_wo_fee;
-		optional<uint64_t> step1_retVals__change_amount;
-		optional<uint64_t> step1_retVals__using_fee;
-		optional<uint32_t> step1_retVals__mixin;
+		boost::optional<uint64_t> step1_retVals__final_total_wo_fee;
+		boost::optional<uint64_t> step1_retVals__change_amount;
+		boost::optional<uint64_t> step1_retVals__using_fee;
+		boost::optional<uint32_t> step1_retVals__mixin;
 		vector<SpendableOutput> step1_retVals__using_outs;
 		// - step2_retVals held for submit tx - optl for increased safety
-		optional<string> step2_retVals__signed_serialized_tx_string;
-		optional<string> step2_retVals__tx_hash_string;
-		optional<string> step2_retVals__tx_key_string;
-		optional<string> step2_retVals__tx_pub_key_string;
+		boost::optional<string> step2_retVals__signed_serialized_tx_string;
+		boost::optional<string> step2_retVals__tx_hash_string;
+		boost::optional<string> step2_retVals__tx_key_string;
+		boost::optional<string> step2_retVals__tx_pub_key_string;
 		//
 		// Imperatives
 		void _proceedTo_authOrSendTransaction();
