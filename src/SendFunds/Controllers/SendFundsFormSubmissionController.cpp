@@ -487,7 +487,8 @@ void FormSubmissionController::cb_II__got_random_outs(
 	auto req_params = LightwalletAPI_Req_SubmitRawTx{
 		this->parameters.from_address_string,
 		this->parameters.sec_viewKey_string,
-		*(step2_retVals.signed_serialized_tx_string)
+		*(step2_retVals.signed_serialized_tx_string),
+		this->parameters.priority
 	};
 	this->submit_raw_tx(req_params); // wait for cb III
 }
