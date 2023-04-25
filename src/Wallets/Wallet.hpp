@@ -39,7 +39,7 @@
 #include <unordered_map>
 #include "../Persistence/PersistableObject.hpp"
 #include "monero_wallet_utils.hpp"
-#include "../APIClient/HostedMonero.hpp"
+#include "../APIClient/HostedBeldex.hpp"
 #include "./Wallet_HostPollingController.hpp"
 #include "./Wallet_TxCleanupController.hpp"
 #include "../APIClient/parsing.hpp"
@@ -190,7 +190,7 @@ namespace Wallets
 namespace Wallets
 {
 	using namespace std;
-	using namespace HostedMonero;
+	using namespace HostedBeldex;
 	//
 	// Constants
 	static const CollectionName collectionName = "Wallets";
@@ -241,7 +241,7 @@ namespace Wallets
 			std::shared_ptr<const Passwords::PasswordProvider> passwordProvider,
 			boost::optional<monero_wallet_utils::WalletDescription> ifGeneratingNewWallet_walletDescription,
 			const cryptonote::network_type nettype,
-			std::shared_ptr<HostedMonero::APIClient> apiClient,
+			std::shared_ptr<HostedBeldex::APIClient> apiClient,
 			std::shared_ptr<Dispatch::Dispatch> dispatch_ptr,
 			std::shared_ptr<UserIdle::Controller> userIdleController,
 			std::shared_ptr<Currencies::ConversionRatesController> ccyConversionRatesController
@@ -266,7 +266,7 @@ namespace Wallets
 			std::shared_ptr<Passwords::PasswordProvider> passwordProvider,
 			const document_persister::DocumentJSON &plaintextData,
 			const cryptonote::network_type nettype,
-			std::shared_ptr<HostedMonero::APIClient> apiClient,
+			std::shared_ptr<HostedBeldex::APIClient> apiClient,
 			std::shared_ptr<Dispatch::Dispatch> dispatch_ptr,
 			std::shared_ptr<UserIdle::Controller> userIdleController,
 			std::shared_ptr<Currencies::ConversionRatesController> ccyConversionRatesController
@@ -718,7 +718,7 @@ namespace Wallets
 			}
 			return _keyImageCache;
 		}
-		boost::optional<std::vector<HostedMonero::HistoricalTxRecord>> actual_noLock_transactions()
+		boost::optional<std::vector<HostedBeldex::HistoricalTxRecord>> actual_noLock_transactions()
 		{
 			return _transactions;
 		}
@@ -886,10 +886,10 @@ namespace Wallets
 		//
 		// HostPollingController - Delegation / Protocol
 		void _HostPollingController_didFetch_addressInfo(
-			const HostedMonero::ParsedResult_AddressInfo &parsedResult
+			const HostedBeldex::ParsedResult_AddressInfo &parsedResult
 		);
 		void _HostPollingController_didFetch_addressTransactions(
-			const HostedMonero::ParsedResult_AddressTransactions &parsedResult
+			const HostedBeldex::ParsedResult_AddressTransactions &parsedResult
 		);
 	private:
 		//
@@ -903,7 +903,7 @@ namespace Wallets
 		boost::optional<bool> _login__generated_locally;
 		//
 		cryptonote::network_type _nettype;
-		std::shared_ptr<HostedMonero::APIClient> _apiClient;
+		std::shared_ptr<HostedBeldex::APIClient> _apiClient;
 		std::shared_ptr<Dispatch::Dispatch> _dispatch_ptr;
 		std::shared_ptr<UserIdle::Controller> _userIdleController;
 		std::shared_ptr<Currencies::ConversionRatesController> _ccyConversionRatesController;
@@ -936,8 +936,8 @@ namespace Wallets
 		boost::optional<uint64_t> _transaction_height;
 		boost::optional<uint64_t> _blockchain_height;
 		//
-		boost::optional<std::vector<HostedMonero::SpentOutputDescription>> _spentOutputs;
-		boost::optional<std::vector<HostedMonero::HistoricalTxRecord>> _transactions;
+		boost::optional<std::vector<HostedBeldex::SpentOutputDescription>> _spentOutputs;
+		boost::optional<std::vector<HostedBeldex::HistoricalTxRecord>> _transactions;
 		//
 		boost::optional<time_t> _dateThatLast_fetchedAccountInfo;
 		boost::optional<time_t> _dateThatLast_fetchedAccountTransactions;
@@ -986,7 +986,7 @@ namespace Wallets
 			std::function<void(boost::optional<string> err_str)> fn
 		);
 		void _manuallyInsertTransactionRecord(
-			const HostedMonero::HistoricalTxRecord &transaction
+			const HostedBeldex::HistoricalTxRecord &transaction
 		);
 		//
 		void __lock_sending();

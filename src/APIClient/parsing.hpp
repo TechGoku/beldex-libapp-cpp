@@ -45,7 +45,7 @@
 #include "../Wallets/Wallet_KeyImageCache.hpp"
 
 
-namespace HostedMonero
+namespace HostedBeldex
 {
 	using namespace std;
 	using namespace rapidjson;
@@ -661,7 +661,7 @@ namespace HostedMonero
 		return os;
 	}
 }
-namespace HostedMonero
+namespace HostedBeldex
 {
 	struct ParsedResult_Login
 	{
@@ -743,7 +743,7 @@ namespace HostedMonero
 					);
 					string spent_output__keyImage = string(spent_output["key_image"].GetString(), spent_output["key_image"].GetStringLength());
 					if (spent_output__keyImage != generated__keyImage) { // not spent
-						MDEBUG("HostedMonero: Output used as mixin \(spent_output__keyImage)/\(generated__keyImage))");
+						MDEBUG("HostedBeldex: Output used as mixin \(spent_output__keyImage)/\(generated__keyImage))");
 						uint64_t spent_output__amount = stoull(spent_output["amount"].GetString());
 						total_sent -= spent_output__amount;
 					}
@@ -765,11 +765,11 @@ namespace HostedMonero
 				try {
 					ccy = Currencies::CurrencyFrom(ccySymbol); // may throw - and will throw on 'BTC' in response
 				} catch (const std::exception& e) {
-					MWARNING("HostedMonero.APIClient: Unrecognized currency " << ccySymbol << " in rates matrix");
+					MWARNING("HostedBeldex.APIClient: Unrecognized currency " << ccySymbol << " in rates matrix");
 					continue; // already logged
 				}
 				if (ccy == Currencies::Currency::none) { // we shouldn't actually see this - we're expecting it to throw .. so let's throw here
-					BOOST_THROW_EXCEPTION(logic_error("HostedMonero.APIClient: Unexpectedly unrecognized currency in rates matrix"));
+					BOOST_THROW_EXCEPTION(logic_error("HostedBeldex.APIClient: Unexpectedly unrecognized currency in rates matrix"));
 					continue;
 				}
 				final_xmrToCcyRatesByCcy[ccy] = xmrToCcyRate;

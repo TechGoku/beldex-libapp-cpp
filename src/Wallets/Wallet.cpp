@@ -47,11 +47,11 @@ struct OptlErrStrCBFunctor
 };
 struct LogInReqCBFunctor
 { // when you pass this functor to its destination, do a std::move of it to the destination
-	std::function<void(boost::optional<string> err_str, boost::optional<HostedMonero::ParsedResult_Login> result)> fn; // do a std::move to this property manually
+	std::function<void(boost::optional<string> err_str, boost::optional<HostedBeldex::ParsedResult_Login> result)> fn; // do a std::move to this property manually
 	~LogInReqCBFunctor() {
 		cout << "LogInReqCBFunctor dtor" << endl;
 	}
-	void operator()(boost::optional<string> err_str, boost::optional<HostedMonero::ParsedResult_Login> result)
+	void operator()(boost::optional<string> err_str, boost::optional<HostedBeldex::ParsedResult_Login> result)
 	{
 		if (err_str != none) {
 			fn(std::move(*err_str), none);
@@ -89,8 +89,8 @@ void Object::deBoot()
 //	boost::optional<uint64_t> old__totalReceived = none;
 //	boost::optional<uint64_t> old__totalSent = none;
 //	boost::optional<uint64_t> old__lockedBalance = none;
-//	boost::optional<std::vector<HostedMonero::SpentOutputDescription>> old__spentOutputs = none;
-//	boost::optional<std::vector<HostedMonero::HistoricalTxRecord>> old__transactions = none;
+//	boost::optional<std::vector<HostedBeldex::SpentOutputDescription>> old__spentOutputs = none;
+//	boost::optional<std::vector<HostedBeldex::HistoricalTxRecord>> old__transactions = none;
 //	if (_totalReceived != none) {
 //		old__totalReceived = *_totalReceived;
 //	}
@@ -342,7 +342,7 @@ void Object::_boot_byLoggingIn(
 		cb_functor
 	] (
 		boost::optional<string> login__err_str,
-		boost::optional<HostedMonero::ParsedResult_Login> result
+		boost::optional<HostedBeldex::ParsedResult_Login> result
 	) {
 		if (auto inner_spt = weak_this.lock()) {
 			inner_spt->_isLoggingIn = false;
@@ -568,10 +568,10 @@ boost::optional<string/*err_str*/> Object::SetValuesAndSave(
 //
 // Imperatives - Local tx CRUD
 void Object::_manuallyInsertTransactionRecord(
-	const HostedMonero::HistoricalTxRecord &transaction
+	const HostedBeldex::HistoricalTxRecord &transaction
 ) {
 	if (_transactions == none) {
-		_transactions = std::vector<HostedMonero::HistoricalTxRecord>();
+		_transactions = std::vector<HostedBeldex::HistoricalTxRecord>();
 	}
 	(*_transactions).push_back(transaction); // pushing a copy
 	boost::optional<string> err_str = saveToDisk();
@@ -690,7 +690,7 @@ void Object::_manuallyInsertTransactionRecord(
 //		} catch let e {
 //			fatalError("req_params_json_string parse error … \(e)")
 //		}
-//		thisSelf._current_sendFunds_request = HostedMonero.APIClient.shared.UnspentOuts(
+//		thisSelf._current_sendFunds_request = HostedBeldex.APIClient.shared.UnspentOuts(
 //																						parameters: parameters,
 //																						{ [weak thisSelf] (err_str, response_data) in
 //																							guard let thisThisSelf = thisSelf else {
@@ -715,7 +715,7 @@ void Object::_manuallyInsertTransactionRecord(
 //		} catch let e {
 //			fatalError("req_params_json_string parse error … \(e)")
 //		}
-//		thisSelf._current_sendFunds_request = HostedMonero.APIClient.shared.RandomOuts(
+//		thisSelf._current_sendFunds_request = HostedBeldex.APIClient.shared.RandomOuts(
 //																					   parameters: parameters,
 //																					   { [weak thisSelf] (err_str, response_data) in
 //																						   guard let thisThisSelf = thisSelf else {
@@ -740,7 +740,7 @@ void Object::_manuallyInsertTransactionRecord(
 //		} catch let e {
 //			fatalError("req_params_json_string parse error … \(e)")
 //		}
-//		thisSelf._current_sendFunds_request = HostedMonero.APIClient.shared.SubmitSerializedSignedTransaction(
+//		thisSelf._current_sendFunds_request = HostedBeldex.APIClient.shared.SubmitSerializedSignedTransaction(
 //																											  parameters: parameters,
 //																											  { [weak thisSelf] (err_str, response_data) in
 //																												  guard let thisThisSelf = thisSelf else {
@@ -880,7 +880,7 @@ void Object::__unlock_sending()
 //
 // HostPollingController - Delegation / Protocol
 void Object::_HostPollingController_didFetch_addressInfo(
-	const HostedMonero::ParsedResult_AddressInfo &parsedResult
+	const HostedBeldex::ParsedResult_AddressInfo &parsedResult
 ) {
 	auto xmrToCcyRatesByCcy = parsedResult.xmrToCcyRatesByCcy; // copy
 	std::shared_ptr<Object> shared_this = shared_from_this();
@@ -942,7 +942,7 @@ void Object::_HostPollingController_didFetch_addressInfo(
 	}
 }
 void Object::_HostPollingController_didFetch_addressTransactions(
-	const HostedMonero::ParsedResult_AddressTransactions &parsedResult
+	const HostedBeldex::ParsedResult_AddressTransactions &parsedResult
 ) {
 	bool didActuallyChange_heights = (_account_scanned_height == none || *_account_scanned_height != parsedResult.account_scanned_height)
 		|| (_account_scanned_block_height == none || *_account_scanned_block_height != parsedResult.account_scanned_block_height)
@@ -960,13 +960,13 @@ void Object::_HostPollingController_didFetch_addressTransactions(
 	// Doing this allows us to selectively preserve already-cached info.
 	size_t numberOfTransactionsAdded = 0; // to be finalized…
 	//		var newTransactions = [MoneroHistoricalTransactionRecord]()
-	std::vector<HostedMonero::HistoricalTxRecord> existing_transactions; // to be finalized…
+	std::vector<HostedBeldex::HistoricalTxRecord> existing_transactions; // to be finalized…
 	if (_transactions != none) {
 		existing_transactions = std::move(*_transactions); // copy! (or rather, a move … because we're just about to reconstruct it)
 	}
 	//
 	// Always make sure to construct new array so we have the old set
-	std::unordered_map<string, HostedMonero::HistoricalTxRecord> txs_by_hash;
+	std::unordered_map<string, HostedBeldex::HistoricalTxRecord> txs_by_hash;
 	//
 	//
 	// TODO: optimize this by using raw ptrs or smart ptrs
@@ -981,12 +981,12 @@ void Object::_HostPollingController_didFetch_addressTransactions(
 		// in JS here we delete the 'id' field but we don't have it in Swift - in JS, the comment is: "because this field changes while sending funds, even though hash stays the same, and because we don't want `id` messing with our ability to diff. so we're not even going to try to store this"
 		std::unordered_map<
 			string,
-			HostedMonero::HistoricalTxRecord
+			HostedBeldex::HistoricalTxRecord
 		>::const_iterator existing_tx__it = txs_by_hash.find((*incoming_tx__it).hash);
 		bool isNewTransaction = existing_tx__it == txs_by_hash.end();
 		// ^- If any existing tx is also in incoming txs, this will cause
 		// the (correct) deletion of e.g. isJustSentTransaction=true.
-		HostedMonero::HistoricalTxRecord final_incoming_tx = *incoming_tx__it; // a mutable copy
+		HostedBeldex::HistoricalTxRecord final_incoming_tx = *incoming_tx__it; // a mutable copy
 		if (isNewTransaction) { // This is generally now only going to be hit when new incoming txs happen - or outgoing txs done on other logins
 			didActuallyChange_transactions = true;
 			numberOfTransactionsAdded += 1;
@@ -1031,11 +1031,11 @@ void Object::_HostPollingController_didFetch_addressTransactions(
 //		}
 	}
 	//
-	std::vector<HostedMonero::HistoricalTxRecord> finalized_transactions;
+	std::vector<HostedBeldex::HistoricalTxRecord> finalized_transactions;
 	for (auto it = txs_by_hash.begin(); it != txs_by_hash.end(); it++) {
 		finalized_transactions.push_back(it->second); // TODO: this is also a copy …… optimize this by using a pointer
 	}
-	sort(finalized_transactions.begin(), finalized_transactions.end(), HostedMonero::sorting_historicalTxRecords_byTimestamp_walletsList);
+	sort(finalized_transactions.begin(), finalized_transactions.end(), HostedBeldex::sorting_historicalTxRecords_byTimestamp_walletsList);
 	//
 	_transactions = std::move(finalized_transactions);
 	//

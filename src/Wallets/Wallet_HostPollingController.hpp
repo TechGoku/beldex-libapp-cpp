@@ -39,7 +39,7 @@
 #include <mutex>
 #include "../APIClient/HTTPRequests_Interface.hpp"
 #include "../Dispatch/Dispatch_Interface.hpp"
-#include "../APIClient/HostedMonero.hpp"
+#include "../APIClient/HostedBeldex.hpp"
 //
 namespace Wallets
 {
@@ -58,7 +58,7 @@ namespace Wallets
 		HostPollingController(
 			std::weak_ptr<Object> wallet,
 			std::shared_ptr<Dispatch::Dispatch> dispatch_ptr,
-			std::shared_ptr<HostedMonero::APIClient> apiClient,
+			std::shared_ptr<HostedBeldex::APIClient> apiClient,
 			std::function<void()>&& didUpdate_factorOf_isFetchingAnyUpdates_fn
 		):
 		_wallet(wallet),
@@ -92,7 +92,7 @@ namespace Wallets
 		// Properties
 		std::weak_ptr<Object> _wallet;
 		std::shared_ptr<Dispatch::Dispatch> _dispatch_ptr;
-		std::shared_ptr<HostedMonero::APIClient> _apiClient;
+		std::shared_ptr<HostedBeldex::APIClient> _apiClient;
 		std::function<void()> _didUpdate_factorOf_isFetchingAnyUpdates_fn;
 		//
 		std::mutex timer_mutex;

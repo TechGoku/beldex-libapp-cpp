@@ -42,7 +42,7 @@
 #include "../Settings/SettingsProviders.hpp"
 #include "../Lists/PersistedObjectListController.hpp"
 #include "./Wallet.hpp"
-#include "../APIClient/HostedMonero.hpp"
+#include "../APIClient/HostedBeldex.hpp"
 #include "cryptonote_config.h"
 #include "../UserIdle/UserIdle.hpp"
 //
@@ -89,7 +89,7 @@ namespace Wallets
 		}
 		//
 		// Dependencies
-		std::shared_ptr<HostedMonero::APIClient> apiClient;
+		std::shared_ptr<HostedBeldex::APIClient> apiClient;
 		std::shared_ptr<UserIdle::Controller> userIdleController;
 		std::shared_ptr<Currencies::ConversionRatesController> ccyConversionRatesController;
 		//
