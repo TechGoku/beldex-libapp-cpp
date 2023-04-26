@@ -129,7 +129,7 @@ BOOST_AUTO_TEST_CASE(walletsListController_addByMnemonic, *utf::depends_on("serv
 	using namespace App;
 	//
 	BOOST_REQUIRE(ServiceLocatorSingleton::instance().settingsController->set_specificAPIAddressURLAuthority(
-		string("api.mymonero.com:8443")
+		string("api.beldex.dev")
 	));
 	//
 	auto wlc_spt = ServiceLocatorSingleton::instance().walletsListController;
@@ -188,7 +188,7 @@ BOOST_AUTO_TEST_CASE(walletsListController_addByAddressAndKeys, *utf::depends_on
 	using namespace App;
 	//
 	BOOST_REQUIRE(ServiceLocatorSingleton::instance().settingsController->set_specificAPIAddressURLAuthority(
-		string("api.mymonero.com:8443")
+		string("api.beldex.dev")
 	));
 	//
 	auto wlc_spt = ServiceLocatorSingleton::instance().walletsListController;
@@ -253,7 +253,7 @@ BOOST_AUTO_TEST_CASE(walletsListController_createNewWallet, *utf::depends_on("wa
 	using namespace App;
 	//
 	BOOST_REQUIRE(ServiceLocatorSingleton::instance().settingsController->set_specificAPIAddressURLAuthority(
-		string("api.mymonero.com:8443")
+		string("api.beldex.dev")
 	));
 	//
 	auto wlc_spt = ServiceLocatorSingleton::instance().walletsListController;
@@ -330,7 +330,7 @@ BOOST_AUTO_TEST_CASE(walletsListController_deleteAllNewWallets, *utf::depends_on
 	using namespace App;
 	//
 	BOOST_REQUIRE(ServiceLocatorSingleton::instance().settingsController->set_specificAPIAddressURLAuthority(
-		string("api.mymonero.com:8443")
+		string("api.beldex.dev")
 	));
 	//
 	auto wlc_spt = ServiceLocatorSingleton::instance().walletsListController;
