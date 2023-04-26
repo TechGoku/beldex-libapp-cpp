@@ -33,7 +33,7 @@
 //
 #include "Wallet_HostPollingController.hpp"
 using namespace Wallets;
-#include "../APIClient/HostedMonero.hpp"
+#include "../APIClient/HostedBeldex.hpp"
 #include "misc_log_ex.h"
 #include "Wallet.hpp"
 //
@@ -160,7 +160,7 @@ void HostPollingController::_fetch_addressInfo()
 		wallet_spt->spend_sec_key(),
 		[weak_this] (
 			boost::optional<string> err_str,
-			boost::optional<HostedMonero::ParsedResult_AddressInfo> result
+			boost::optional<HostedBeldex::ParsedResult_AddressInfo> result
 		) {
 			if (auto inner_spt = weak_this.lock()) {
 				if (inner_spt->_requestHandleFor_addressInfo == nullptr) {
@@ -208,7 +208,7 @@ void HostPollingController::_fetch_addressTransactions()
 		wallet_spt->spend_sec_key(),
 		[weak_this] (
 			boost::optional<string> err_str,
-			boost::optional<HostedMonero::ParsedResult_AddressTransactions> result
+			boost::optional<HostedBeldex::ParsedResult_AddressTransactions> result
 		) {
 			if (auto inner_spt = weak_this.lock()) {
 				if (inner_spt->_requestHandleFor_addressTransactions == nullptr) {

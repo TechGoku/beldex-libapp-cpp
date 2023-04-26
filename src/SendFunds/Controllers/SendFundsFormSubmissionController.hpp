@@ -40,8 +40,8 @@
 #include <boost/optional/optional.hpp>
 #include <boost/locale.hpp>
 #include "cryptonote_config.h"
-#include "monero_send_routine.hpp"
-#include "monero_fork_rules.hpp"
+#include "beldex_send_routine.hpp"
+#include "beldex_fork_rules.hpp"
 
 namespace SendFunds
 {
@@ -49,8 +49,8 @@ namespace SendFunds
 	using namespace boost;
 	using namespace boost::locale;
 	using namespace cryptonote;
-	using namespace monero_send_routine;
-	using namespace monero_transfer_utils;
+	using namespace beldex_send_routine;
+	using namespace beldex_transfer_utils;
 	//
 	// Accessory Types
 	enum ProcessStep
@@ -213,7 +213,7 @@ namespace SendFunds
 		uint64_t fee_per_b;
 		uint64_t fee_per_o;
 		uint64_t fee_mask;
-		monero_fork_rules::use_fork_rules_fn_type use_fork_rules;
+		beldex_fork_rules::use_fork_rules_fn_type use_fork_rules;
 		// - re-entry params
 		boost::optional<uint64_t> prior_attempt_size_calcd_fee;
 		boost::optional<SpendableOutputToRandomAmountOutputs> prior_attempt_unspent_outs_to_mix_outs;

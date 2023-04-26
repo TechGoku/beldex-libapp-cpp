@@ -313,7 +313,7 @@ BOOST_AUTO_TEST_CASE(sendFunds_submission_manualAddrPID, *utf::depends_on("mocke
 	using namespace std;
 	using namespace boost;
 	using namespace SendFunds;
-	using namespace monero_send_routine;
+	using namespace beldex_send_routine;
 	using namespace serial_bridge_utils;
 	vector<string> send_amounts = {"0"};
 	vector<string> entered_addresses = {"4APbcAKxZ2KPVPMnqa5cPtJK25tr7maE7LrJe67vzumiCtWwjDBvYnHZr18wFexJpih71Mxsjv8b7EpQftpB9NjPPXmZxHN"};

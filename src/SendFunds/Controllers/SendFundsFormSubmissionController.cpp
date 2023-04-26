@@ -35,11 +35,11 @@
 #include <iostream>
 #include "../../OpenAlias/OpenAlias.hpp"
 #include "wallet_errors.h"
-#include "monero_address_utils.hpp"
-#include "monero_paymentID_utils.hpp"
-#include "monero_send_routine.hpp"
-using namespace monero_send_routine;
-using namespace monero_transfer_utils;
+#include "beldex_address_utils.hpp"
+#include "beldex_paymentID_utils.hpp"
+#include "beldex_send_routine.hpp"
+using namespace beldex_send_routine;
+using namespace beldex_transfer_utils;
 using namespace SendFunds;
 
 #include <boost/optional/optional_io.hpp>
@@ -168,7 +168,7 @@ void FormSubmissionController::handle()
 			xmrAddress_toDecode = this->parameters.contact_address.get();
 		}
 		THROW_WALLET_EXCEPTION_IF(xmrAddress_toDecode == boost::none, error::wallet_internal_error, "Expected xmrAddress_toDecode");
-		auto decode_retVals = monero::address_utils::decodedAddress(xmrAddress_toDecode.get(), this->parameters.nettype);
+		auto decode_retVals = beldex::address_utils::decodedAddress(xmrAddress_toDecode.get(), this->parameters.nettype);
         	if (decode_retVals.did_error) {
                 	this->parameters.failure_fn(couldntValidateDestAddress, boost::none, boost::none, boost::none, boost::none);
                 	return;
@@ -182,15 +182,15 @@ void FormSubmissionController::handle()
                 	return;
         	}
 		// since we may have a payment ID here (which may also have been entered manually), validate
-        	if (monero_paymentID_utils::is_a_valid_or_not_a_payment_id(paymentID_toUseOrToNilIfIntegrated) == false) { // convenience function - will be true if nil pid
+        	if (beldex_paymentID_utils::is_a_valid_or_not_a_payment_id(paymentID_toUseOrToNilIfIntegrated) == false) { // convenience function - will be true if nil pid
                 	this->parameters.failure_fn(enterValidPID, boost::none, boost::none, boost::none, boost::none);
                 	return;
         	}
         	if (paymentID_toUseOrToNilIfIntegrated != boost::none && paymentID_toUseOrToNilIfIntegrated->empty() == false) { // short pid / integrated address coersion
                 	if (decode_retVals.isSubaddress != true) { // this is critical or funds will be lost!!
-                        	if (paymentID_toUseOrToNilIfIntegrated->size() == monero_paymentID_utils::payment_id_length__short) { // a short one
+                        	if (paymentID_toUseOrToNilIfIntegrated->size() == beldex_paymentID_utils::payment_id_length__short) { // a short one
                                 	THROW_WALLET_EXCEPTION_IF(decode_retVals.isSubaddress, error::wallet_internal_error, "Expected !decode_retVals.isSubaddress"); // just an extra safety measure
-                               		boost::optional<string> fabricated_integratedAddress_orNone = monero::address_utils::new_integratedAddrFromStdAddr( // construct integrated address
+                               		boost::optional<string> fabricated_integratedAddress_orNone = beldex::address_utils::new_integratedAddrFromStdAddr( // construct integrated address
                                         	*xmrAddress_toDecode, // the monero one
                                         	*paymentID_toUseOrToNilIfIntegrated, // short pid
                                         	this->parameters.nettype
@@ -216,7 +216,7 @@ void FormSubmissionController::handle()
 		return;
 	} else {
 		for (string& xmrAddress_toDecode : this->parameters.enteredAddressValues) {
-			auto decode_retVals = monero::address_utils::decodedAddress(xmrAddress_toDecode, this->parameters.nettype);
+			auto decode_retVals = beldex::address_utils::decodedAddress(xmrAddress_toDecode, this->parameters.nettype);
 
 			if (decode_retVals.did_error) {
                			this->parameters.failure_fn(couldntValidateDestAddress, boost::none, boost::none, boost::none, boost::none);
@@ -229,9 +229,9 @@ void FormSubmissionController::handle()
                 		this->integratedAddressPIDForDisplay = *decode_retVals.paymentID_string;
         		}
 			else if (paymentID_toUseOrToNilIfIntegrated != boost::none && paymentID_toUseOrToNilIfIntegrated->empty() == false && decode_retVals.isSubaddress &&
-				 paymentID_toUseOrToNilIfIntegrated->size() == monero_paymentID_utils::payment_id_length__short) {
+				 paymentID_toUseOrToNilIfIntegrated->size() == beldex_paymentID_utils::payment_id_length__short) {
                                 	THROW_WALLET_EXCEPTION_IF(decode_retVals.isSubaddress, error::wallet_internal_error, "Expected !decode_retVals.isSubaddress"); // just an extra safety measure
-                                	boost::optional<string> fabricated_integratedAddress_orNone = monero::address_utils::new_integratedAddrFromStdAddr( // construct integrated address
+                                	boost::optional<string> fabricated_integratedAddress_orNone = beldex::address_utils::new_integratedAddrFromStdAddr( // construct integrated address
                                         	xmrAddress_toDecode, // the monero one
                                         	*paymentID_toUseOrToNilIfIntegrated, // short pid
                                         	this->parameters.nettype
@@ -331,7 +331,7 @@ void FormSubmissionController::cb_I__got_unspent_outs(boost::optional<string> er
 	this->fee_per_b = *(parsed_res.per_byte_fee);
 	this->fee_per_o = *(parsed_res.fee_per_output);
 	this->fee_mask = *(parsed_res.fee_mask);
-	this->use_fork_rules = monero_fork_rules::make_use_fork_rules_fn(parsed_res.fork_version);
+	this->use_fork_rules = beldex_fork_rules::make_use_fork_rules_fn(parsed_res.fork_version);
 	//
 	this->prior_attempt_size_calcd_fee = boost::none;
 	this->prior_attempt_unspent_outs_to_mix_outs = boost::none;
@@ -344,7 +344,7 @@ void FormSubmissionController::_reenterable_construct_and_send_tx()
 	this->parameters.preSuccess_nonTerminal_validationMessageUpdate_fn(calculatingFee);
 	//
 	Send_Step1_RetVals step1_retVals;
-	monero_transfer_utils::send_step1__prepare_params_for_get_decoys(
+	beldex_transfer_utils::send_step1__prepare_params_for_get_decoys(
 		step1_retVals,
 		//
 		this->payment_id_string,
@@ -404,7 +404,7 @@ void FormSubmissionController::cb_II__got_random_outs(
 	THROW_WALLET_EXCEPTION_IF(this->step1_retVals__using_outs.size() == 0, error::wallet_internal_error, "Expected non-0 using_outs");
 
 	Tie_Outs_to_Mix_Outs_RetVals tie_outs_to_mix_outs_retVals;
-	monero_transfer_utils::pre_step2_tie_unspent_outs_to_mix_outs_for_all_future_tx_attempts(
+	beldex_transfer_utils::pre_step2_tie_unspent_outs_to_mix_outs_for_all_future_tx_attempts(
 		tie_outs_to_mix_outs_retVals,
 		//
 		this->step1_retVals__using_outs,
@@ -422,7 +422,7 @@ void FormSubmissionController::cb_II__got_random_outs(
 
 	Send_Step2_RetVals step2_retVals;
 	uint64_t unlock_time = 0; // hard-coded for now since we don't ever expose it, presently
-	monero_transfer_utils::send_step2__try_create_transaction(
+	beldex_transfer_utils::send_step2__try_create_transaction(
 		step2_retVals,
 		//
 		this->parameters.from_address_string,
@@ -508,7 +508,7 @@ void FormSubmissionController::cb_III__submitted_tx(boost::optional<string> err_
 	{
 		boost::optional<string> returning__payment_id = this->payment_id_string; // separated from submit_raw_tx_fn so that it can be captured w/o capturing all of args
 		if (returning__payment_id == boost::none) {
-			auto decoded = monero::address_utils::decodedAddress(this->to_address_strings[0], this->parameters.nettype);
+			auto decoded = beldex::address_utils::decodedAddress(this->to_address_strings[0], this->parameters.nettype);
 			if (decoded.did_error) { // would be very strange...
 				this->parameters.failure_fn(couldntValidateDestAddress, boost::none, boost::none, boost::none, boost::none);
 				return;

@@ -1,9 +1,9 @@
 //
 //  AppBridge.hpp
-//  MyMonero
+//  
 //
 //  Copyright (c) 2014-2019, MyMonero.com
-//
+//  Copyright (c)      2023, The Beldex Project
 //  All rights reserved.
 //
 //  Redistribution and use in source and binary forms, with or without modification, are

@@ -1,9 +1,8 @@
 //
-//  HostedMonero.cpp
-//  MyMonero
+//  HostedBeldex.cpp
 //
 //  Copyright (c) 2014-2019, MyMonero.com
-//
+// Copyright (c)      2023, The Beldex Project
 //  All rights reserved.
 //
 //  Redistribution and use in source and binary forms, with or without modification, are
@@ -31,8 +30,8 @@
 //  THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
 //
-#include "HostedMonero.hpp"
-using namespace HostedMonero;
+#include "HostedBeldex.hpp"
+using namespace HostedBeldex;
 //
 #include "rapidjson_defines.hpp" // must be included before rapidjson include
 #include "rapidjson/document.h"
@@ -159,7 +158,7 @@ std::shared_ptr<HTTPRequests::Handle> APIClient::logIn(
 	bool generated_locally,
 	std::function<void(
 		boost::optional<string> err_str,
-		boost::optional<HostedMonero::ParsedResult_Login> result
+		boost::optional<HostedBeldex::ParsedResult_Login> result
 	)> fn
 ) {
 	auto params = new_parameters_forWalletRequest(address, sec_view_key);
@@ -198,7 +197,7 @@ std::shared_ptr<HTTPRequests::Handle> APIClient::addressInfo(
 	const string &sec_spend_key,
 	std::function<void(
 		boost::optional<string> err_str,
-		boost::optional<HostedMonero::ParsedResult_AddressInfo> result
+		boost::optional<HostedBeldex::ParsedResult_AddressInfo> result
 	)> fn
 ) {
 	auto params = new_parameters_forWalletRequest(address, sec_view_key);
@@ -242,7 +241,7 @@ std::shared_ptr<HTTPRequests::Handle> APIClient::addressTransactions(
 	const string &sec_spend_key,
 	std::function<void(
 		boost::optional<string> err_str,
-		boost::optional<HostedMonero::ParsedResult_AddressTransactions> result
+		boost::optional<HostedBeldex::ParsedResult_AddressTransactions> result
 	)> fn
 ) {
 	auto params = new_parameters_forWalletRequest(address, sec_view_key);
@@ -285,7 +284,7 @@ std::shared_ptr<HTTPRequests::Handle> APIClient::importRequestInfo(
 	const string &sec_view_key,
 	std::function<void(
 		boost::optional<string> err_str,
-		boost::optional<HostedMonero::ParsedResult_ImportRequestInfo> result
+		boost::optional<HostedBeldex::ParsedResult_ImportRequestInfo> result
 	)> fn
 ) {
 	auto params = new_parameters_forWalletRequest(address, sec_view_key);
@@ -432,14 +431,14 @@ std::shared_ptr<HTTPRequests::Handle> APIClient::submitTx(
 #if DEBUG
 	#if MOCK_SUCCESSOFTXSUBMISSION
 	
-	MWARNING("HostedMonero: Merely returning mocked success response instead of actually submitting transaction to the server.");
+	MWARNING("HostedBeldex: Merely returning mocked success response instead of actually submitting transaction to the server.");
 	fn(none, nullptr);
 	return nullptr;
 	
 	#endif
 #endif
 	//
-	MDEBUG("HostedMonero: Submitting transaction…");
+	MDEBUG("HostedBeldex: Submitting transaction…");
 	std::shared_ptr<APIClient> shared_this = shared_from_this();
 	std::weak_ptr<APIClient> weak_this = shared_this;
 	return requestFactory->new_request(

@@ -1,9 +1,8 @@
 //
-//  HostedMonero.hpp
-//  MyMonero
+//  HostedBeldex.hpp
 //
 //  Copyright (c) 2014-2019, MyMonero.com
-//
+// Copyright (c)      2023, The Beldex Project
 //  All rights reserved.
 //
 //  Redistribution and use in source and binary forms, with or without modification, are
@@ -32,8 +31,8 @@
 //
 //
 //
-#ifndef HostedMonero_HPP_
-#define HostedMonero_HPP_
+#ifndef HostedBeldex_HPP_
+#define HostedBeldex_HPP_
 //
 #include <iostream> // TODO: this is to obtain stdlib.. what should be imported instead of this?
 #include <boost/signals2.hpp>
@@ -43,7 +42,7 @@
 #include "./parsing.hpp"
 #include "../Wallets/Wallet_KeyImageCache.hpp"
 //
-namespace HostedMonero
+namespace HostedBeldex
 {
 	using namespace std;
 	//
@@ -73,7 +72,7 @@ namespace HostedMonero
 			bool generated_locally,
 			std::function<void(
 				boost::optional<string> err_str,
-				boost::optional<HostedMonero::ParsedResult_Login> result
+				boost::optional<HostedBeldex::ParsedResult_Login> result
 			)> fn
 		);
 		std::shared_ptr<HTTPRequests::Handle> addressInfo(
@@ -84,7 +83,7 @@ namespace HostedMonero
 			const string &sec_spend_key,
 			std::function<void(
 				boost::optional<string> err_str,
-				boost::optional<HostedMonero::ParsedResult_AddressInfo> result
+				boost::optional<HostedBeldex::ParsedResult_AddressInfo> result
 			)> fn
 		);
 		std::shared_ptr<HTTPRequests::Handle> addressTransactions(
@@ -95,7 +94,7 @@ namespace HostedMonero
 			const string &sec_spend_key,
 			std::function<void(
 				boost::optional<string> err_str,
-				boost::optional<HostedMonero::ParsedResult_AddressTransactions> result
+				boost::optional<HostedBeldex::ParsedResult_AddressTransactions> result
 			)> fn
 		);
 		std::shared_ptr<HTTPRequests::Handle> importRequestInfo(
@@ -103,7 +102,7 @@ namespace HostedMonero
 			const string &sec_view_key,
 			std::function<void(
 				boost::optional<string> err_str,
-				boost::optional<HostedMonero::ParsedResult_ImportRequestInfo> result
+				boost::optional<HostedBeldex::ParsedResult_ImportRequestInfo> result
 			)> fn
 		);
 		std::shared_ptr<HTTPRequests::Handle> unspentOuts(
@@ -145,4 +144,4 @@ namespace HostedMonero
    };
 }
 
-#endif /* HostedMonero_HPP_ */
+#endif /* HostedBeldex_HPP_ */
