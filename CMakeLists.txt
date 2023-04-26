@@ -49,7 +49,7 @@ set(BELDEX_CORE_CPP "src/beldex-core-cpp")
 set(BELDEX_CORE_CPP_SRC "${BELDEX_CORE_CPP}/src")
 include_directories("${BELDEX_CORE_CPP}/src")
 #
-set(BELDEX_SRC "${BELDEX_CORE_CPP}/contrib/monero-core-custom")
+set(BELDEX_SRC "${BELDEX_CORE_CPP}/contrib/beldex-core-custom")
 include_directories(${BELDEX_SRC})
 include_directories("${BELDEX_SRC}/epee/include")
 include_directories("${BELDEX_SRC}/common")
@@ -128,24 +128,24 @@ set(
     #
     src/contrib/rapidjson_defines.hpp
 	#
-	${BELDEX_CORE_CPP_SRC}/monero_address_utils.hpp
-	${BELDEX_CORE_CPP_SRC}/monero_address_utils.cpp
-	${BELDEX_CORE_CPP_SRC}/monero_paymentID_utils.hpp
-	${BELDEX_CORE_CPP_SRC}/monero_paymentID_utils.cpp
-	${BELDEX_CORE_CPP_SRC}/monero_key_image_utils.hpp
-	${BELDEX_CORE_CPP_SRC}/monero_key_image_utils.cpp
-	${BELDEX_CORE_CPP_SRC}/monero_fee_utils.hpp
-	${BELDEX_CORE_CPP_SRC}/monero_fee_utils.cpp
-	${BELDEX_CORE_CPP_SRC}/monero_transfer_utils.hpp
-	${BELDEX_CORE_CPP_SRC}/monero_transfer_utils.cpp
-	${BELDEX_CORE_CPP_SRC}/monero_fork_rules.hpp
-	${BELDEX_CORE_CPP_SRC}/monero_fork_rules.cpp
-	${BELDEX_CORE_CPP_SRC}/monero_wallet_utils.hpp
-	${BELDEX_CORE_CPP_SRC}/monero_wallet_utils.cpp
+	${BELDEX_CORE_CPP_SRC}/beldex_address_utils.hpp
+	${BELDEX_CORE_CPP_SRC}/beldex_address_utils.cpp
+	${BELDEX_CORE_CPP_SRC}/beldex_paymentID_utils.hpp
+	${BELDEX_CORE_CPP_SRC}/beldex_paymentID_utils.cpp
+	${BELDEX_CORE_CPP_SRC}/beldex_key_image_utils.hpp
+	${BELDEX_CORE_CPP_SRC}/beldex_key_image_utils.cpp
+	${BELDEX_CORE_CPP_SRC}/beldex_fee_utils.hpp
+	${BELDEX_CORE_CPP_SRC}/beldex_fee_utils.cpp
+	${BELDEX_CORE_CPP_SRC}/beldex_transfer_utils.hpp
+	${BELDEX_CORE_CPP_SRC}/beldex_transfer_utils.cpp
+	${BELDEX_CORE_CPP_SRC}/beldex_fork_rules.hpp
+	${BELDEX_CORE_CPP_SRC}/beldex_fork_rules.cpp
+	${BELDEX_CORE_CPP_SRC}/beldex_wallet_utils.hpp
+	${BELDEX_CORE_CPP_SRC}/beldex_wallet_utils.cpp
 	${BELDEX_CORE_CPP_SRC}/serial_bridge_index.hpp
 	${BELDEX_CORE_CPP_SRC}/serial_bridge_index.cpp
-	${BELDEX_CORE_CPP_SRC}/monero_send_routine.hpp
-	${BELDEX_CORE_CPP_SRC}/monero_send_routine.cpp
+	${BELDEX_CORE_CPP_SRC}/beldex_send_routine.hpp
+	${BELDEX_CORE_CPP_SRC}/beldex_send_routine.cpp
 	${BELDEX_CORE_CPP_SRC}/serial_bridge_utils.hpp
 	${BELDEX_CORE_CPP_SRC}/serial_bridge_utils.cpp
 	${BELDEX_CORE_CPP_SRC}/tools__ret_vals.hpp
@@ -199,7 +199,7 @@ set(
 )
 # needed for slow-hash
 add_compile_options(-maes)
-add_compile_definitions(MYMONERO_CORE_CUSTOM)
+add_compile_definitions(BELDEX_CORE_CUSTOM)
 
 #Run through each source
 foreach(testSrc ${TEST_SRCS})
