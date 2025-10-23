@@ -1,0 +1,3 @@
+[submodule "src/beldex-core-cpp"]
+	path = src/beldex-core-cpp
+	url = https://github.com/TechGoku/beldex-core-cpp.git
