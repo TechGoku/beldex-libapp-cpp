@@ -112,6 +112,11 @@ namespace SendFunds
 		string tx_hash_string;
 		string tx_key_string; // this includes additional_tx_keys
 		string tx_pub_key_string; // from get_tx_pub_key_from_extra()
+		//! HF21: set only when this send deployed a new asset. It is the id the
+		//! token now has on chain, and the only place the caller can learn it --
+		//! it is derived from the descriptor, not chosen, and nothing else in the
+		//! response identifies the token that was just created.
+		boost::optional<string> token_id;
 	};
 	struct Parameters
 	{
@@ -181,6 +186,13 @@ namespace SendFunds
 		//! are human-readable and a token's scale is its own, not BDX's 9, so
 		//! parsing with the BDX scale would silently send the wrong quantity.
 		boost::optional<uint8_t> token_decimal_point;
+		//! Set to deploy a new asset rather than transfer an existing one. The
+		//! send then creates the token described here, mints its initial supply
+		//! to the wallet's own address, and burns the protocol's deployment fee
+		//! in BDX on top of the network fee. token_id above must be the id
+		//! derived from this descriptor, and token_decimal_point its decimals,
+		//! so that the initial supply is parsed and tagged on the token's scale.
+		boost::optional<token_operation_data> token_operation;
 	};
 	//
 	// Controllers

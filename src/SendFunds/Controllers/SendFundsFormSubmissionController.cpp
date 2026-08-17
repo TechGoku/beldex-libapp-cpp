@@ -106,6 +106,9 @@ void FormSubmissionController::handle()
 			this->parameters.failure_fn(cannotParseAmount, boost::none, boost::none, boost::none, boost::none);
 			return;
 		}
+		// Deploying a new asset may legitimately mint nothing up front -- create
+		// the token now, mint later -- so a zero amount is not an error there.
+		const bool deploying_token = this->parameters.token_operation != boost::none;
 		this->sending_amounts.reserve(this->parameters.send_amount_strings.size());
 		for (const auto& amount : this->parameters.send_amount_strings) {
 			uint64_t parsed_amount;
@@ -116,7 +119,7 @@ void FormSubmissionController::handle()
 				this->parameters.failure_fn(cannotParseAmount, boost::none, boost::none, boost::none, boost::none);
 				return;
 			}
-			if (parsed_amount <= 0) {
+			if (parsed_amount <= 0 && !deploying_token) {
 				this->parameters.failure_fn(amountTooLow, boost::none, boost::none, boost::none, boost::none);
 				return;
 			}
@@ -386,7 +389,11 @@ void FormSubmissionController::_reenterable_construct_and_send_tx()
 		// ^- and this will be 'none' as initial value
 		this->prior_attempt_unspent_outs_to_mix_outs, // on re-entry, re-use the same outs and requested decoys, in order to land on the correct calculated fee
 		this->parameters.token_id, // HF21: send this token rather than BDX
-		this->fork_version
+		this->fork_version,
+		// HF21: when set, this send deploys a new asset instead of transferring
+		// one. Selection then draws on native outputs only -- the token has no
+		// outputs yet -- and has to cover the deployment burn as well as the fee.
+		this->parameters.token_operation
 	);
 	if (step1_retVals.errCode != noError) {
 		this->parameters.failure_fn(createTransactionCode_balancesProvided, boost::none, step1_retVals.errCode, step1_retVals.spendable_balance, step1_retVals.required_balance);
@@ -478,7 +485,8 @@ void FormSubmissionController::cb_II__got_random_outs(
 			? vector<boost::optional<string>>(this->to_address_strings.size(), this->parameters.token_id)
 			: vector<boost::optional<string>>{},
 		this->step1_retVals__token_change_amount ? *this->step1_retVals__token_change_amount : 0,
-		this->fork_version
+		this->fork_version,
+		this->parameters.token_operation
 	);
 	if (step2_retVals.errCode != noError) {
 		this->parameters.failure_fn(createTranasctionCode_noBalances, boost::none, step2_retVals.errCode, boost::none, boost::none);
@@ -564,6 +572,12 @@ void FormSubmissionController::cb_III__submitted_tx(boost::optional<string> err_
 	success_retVals.isXMRAddressIntegrated = this-isXMRAddressIntegrated;
 	success_retVals.integratedAddressPIDForDisplay = this->integratedAddressPIDForDisplay;
 	success_retVals.target_addresses = this->to_address_strings;
-	
+	// HF21: hand back the id of the asset just deployed. It is derived from the
+	// descriptor rather than chosen, so this is the caller's only chance to
+	// learn it without recomputing the derivation itself.
+	if (this->parameters.token_operation != boost::none) {
+		success_retVals.token_id = this->parameters.token_id;
+	}
+
 	this->parameters.success_fn(success_retVals);
 }
