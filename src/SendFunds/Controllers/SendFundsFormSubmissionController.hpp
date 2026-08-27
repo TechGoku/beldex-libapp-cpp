@@ -249,6 +249,9 @@ namespace SendFunds
 		//! The same value use_fork_rules was built from, kept in raw form because
 		//! transaction construction needs the number itself, not a predicate.
 		uint8_t fork_version;
+		//! Chain tip from the same response. Token registration locks its
+		//! collateral output to an absolute height, so construction needs it.
+		uint64_t blockchain_height;
 		// - re-entry params
 		boost::optional<uint64_t> prior_attempt_size_calcd_fee;
 		boost::optional<SpendableOutputToRandomAmountOutputs> prior_attempt_unspent_outs_to_mix_outs;

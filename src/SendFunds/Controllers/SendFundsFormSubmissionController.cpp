@@ -71,6 +71,7 @@ void FormSubmissionController::handle()
 	THROW_WALLET_EXCEPTION_IF(this->valsState != WAIT_FOR_HANDLE, error::wallet_internal_error, "Expected valsState of WAIT_FOR_HANDLE");
 	this->valsState = WAIT_FOR_STEP1;
 	this->fork_version = 0; // set for real from the unspent-outs response
+	this->blockchain_height = 0;
 	//
 	if (this->parameters.fromWallet_didFailToInitialize) {
 		this->parameters.failure_fn(unableToLoadWallet, boost::none, boost::none, boost::none, boost::none);
@@ -359,6 +360,7 @@ void FormSubmissionController::cb_I__got_unspent_outs(boost::optional<string> er
 	// the raw fork version (it used to be hard-coded to 18, which disabled every
 	// gate at or above it -- see create_transaction in beldex_transfer_utils.cpp).
 	this->fork_version = parsed_res.fork_version;
+	this->blockchain_height = parsed_res.blockchain_height;
 	this->use_fork_rules = beldex_fork_rules::make_use_fork_rules_fn(parsed_res.fork_version);
 	//
 	this->prior_attempt_size_calcd_fee = boost::none;
@@ -393,7 +395,8 @@ void FormSubmissionController::_reenterable_construct_and_send_tx()
 		// HF21: when set, this send deploys a new asset instead of transferring
 		// one. Selection then draws on native outputs only -- the token has no
 		// outputs yet -- and has to cover the deployment burn as well as the fee.
-		this->parameters.token_operation
+		this->parameters.token_operation,
+		this->blockchain_height
 	);
 	if (step1_retVals.errCode != noError) {
 		this->parameters.failure_fn(createTransactionCode_balancesProvided, boost::none, step1_retVals.errCode, step1_retVals.spendable_balance, step1_retVals.required_balance);
@@ -486,7 +489,8 @@ void FormSubmissionController::cb_II__got_random_outs(
 			: vector<boost::optional<string>>{},
 		this->step1_retVals__token_change_amount ? *this->step1_retVals__token_change_amount : 0,
 		this->fork_version,
-		this->parameters.token_operation
+		this->parameters.token_operation,
+		this->blockchain_height
 	);
 	if (step2_retVals.errCode != noError) {
 		this->parameters.failure_fn(createTranasctionCode_noBalances, boost::none, step2_retVals.errCode, boost::none, boost::none);
