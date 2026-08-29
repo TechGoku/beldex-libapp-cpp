@@ -300,9 +300,15 @@ void FormSubmissionController::_proceedTo_generateSendTransaction()
 	this->parameters.preSuccess_nonTerminal_validationMessageUpdate_fn(initiatingSend); // start with just prefix
 	// ^--- TODO: this may be unnecessary .. there is no longer such a delay
 	this->parameters.preSuccess_nonTerminal_validationMessageUpdate_fn(fetchingLatestBalance);
+	/* HF22: naming the token asks the server for its outputs alongside the
+	   native ones. Both are needed in the same reply - a token transfer spends
+	   token outputs for the amount and native outputs for the fee, which is
+	   always BDX. Absent for an ordinary send, which must never be handed a
+	   token output as coin. */
 	auto req_params = new__req_params__get_unspent_outs(
 		this->parameters.from_address_string,
-		this->parameters.sec_viewKey_string
+		this->parameters.sec_viewKey_string,
+		this->parameters.token_id
 	);
   
 	this->get_unspent_outs(req_params); // wait for cb I
