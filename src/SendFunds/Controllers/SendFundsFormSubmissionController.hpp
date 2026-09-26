@@ -170,7 +170,7 @@ namespace SendFunds
 		std::function<void(void)> canceled_fn;
 		std::function<void(Success_RetVals retVals)> success_fn;
 		//
-		// ── HF21 private tokens ───────────────────────────────────────────
+		// ── HF21 privacy tokens ───────────────────────────────────────────
 		// Appended at the END on purpose: Parameters is built by positional
 		// aggregate initialisation in beldex-libapp-js's emscr_SendFunds_bridge.cpp,
 		// so inserting anywhere earlier silently re-binds every later field.
